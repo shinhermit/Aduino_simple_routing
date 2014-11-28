@@ -28,7 +28,9 @@ SinkNode::SinkNode(const SinkNode & other)
   _rx16(other._rx16),
   _rx64(other._rx64),
   _history(other._history)
-{}
+{
+  initialize();
+}
 
 SinkNode & SinkNode::getInstance()
 {

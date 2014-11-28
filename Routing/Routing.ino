@@ -1,58 +1,46 @@
-#include <XBee.h>
+#include "Alert.h"
+#include "AlertMessage.h"
+#include "DiscoveryMessage.h"
+#include "Message.h"
+#include "MessageConverter.h"
+
 #include <SoftwareSerial.h>
 
-XBee xbee = XBee();
-
-uint8_t* payload;
-uint8_t payload_len;
-
-Rx16Response rx16 = Rx16Response();
-Rx64Response rx64 = Rx64Response();
-
-void setup() {
-
-  xbee.begin(38400);
+void setup()
+{
   Serial.begin(38400);
-
-  Serial.println("Arduino. Will receive packets.");
+  
+  Alert alert(10, 2.1f);
+  AlertMessage alertMessage(0x40762066, 3, alert);
+  DiscoveryMessage discoveryMessage(0x40762066, 3, 20);
+  
+  Serial.println("Serializing");
+  Serial.println( MessageConverter::serialize(alertMessage) );
+  Serial.println( MessageConverter::serialize(discoveryMessage) );
+  
+  uint8_t sink = 0x40762066;
+  unsigned short seqNum = 3;
+  unsigned short senderLevel = 20;
+  unsigned short alertType = 10;
+  float sensorValue = 2.1;
+  String strDiscovery = String("/@")+sink+String("#")+1+String("#")+seqNum+String("#")+senderLevel+String("###");
+  String strAlert = String("/@")+sink+String("#")+0+String("#")+seqNum+String("##")+alertType+String("#")+sensorValue;
+  
+  Serial.println("Parsing");
+  Serial.println( strDiscovery );
+  Serial.println( strAlert );
+  
+  Message * parsedDiscovery = MessageConverter::parse(strDiscovery);
+  Message * parsedAlert = MessageConverter::parse(strAlert);
+  
+  Serial.println("Serializing parsed");
+  Serial.println( MessageConverter::serialize(*parsedDiscovery) );
+  Serial.println( MessageConverter::serialize(*parsedAlert) );
+  
+  delete parsedDiscovery;
+  delete parsedAlert;
 }
 
-void loop() {
-
-  // read incoming pkt
-  xbee.readPacket();
-
-  if (xbee.getResponse().isAvailable()) {
-    
-    Serial.println("receive");
-    
-    // is it a response to the previously sent packet?            	
-    if (xbee.getResponse().getApiId() == TX_STATUS_RESPONSE) {
-    
-    }    
-    
-    if (xbee.getResponse().getApiId() == RX_16_RESPONSE || xbee.getResponse().getApiId() == RX_64_RESPONSE) {
-    
-      if (xbee.getResponse().getApiId() == RX_16_RESPONSE) {
-        xbee.getResponse().getRx16Response(rx16);
-        
-        payload = rx16.getData();
-        payload_len=rx64.getDataLength();     
-      } 
-      else 
-      {
-        xbee.getResponse().getRx64Response(rx64);
-        
-        payload = rx64.getData();
-        payload_len=rx64.getDataLength();
-      }
-          
-      for (int i=0; i<payload_len; i++)
-        Serial.print((char)payload[i]);
-            
-      Serial.println("\ndone");  
-    } 
-  } 
+void loop()
+{
 }
-
-

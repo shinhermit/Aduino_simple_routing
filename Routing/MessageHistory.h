@@ -1,5 +1,5 @@
-#ifndef MESSAGE_BUFFER_H
-#define MESSAGE_BUFFER_H
+#ifndef MESSAGE_HISTORY_H
+#define MESSAGE_HISTORY_H
 
 #include "HistoryEntry.h"
 
