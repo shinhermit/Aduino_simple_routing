@@ -22,6 +22,14 @@ SinkNode::SinkNode()
   initialize();
 }
 
+SinkNode::SinkNode(const SinkNode & other)
+  :_seqNum(other._seqNum),
+  _xbee(other._xbee),
+  _rx16(other._rx16),
+  _rx64(other._rx64),
+  _history(other._history)
+{}
+
 SinkNode & SinkNode::getInstance()
 {
   return _instance;

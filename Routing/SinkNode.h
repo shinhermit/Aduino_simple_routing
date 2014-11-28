@@ -34,6 +34,8 @@ class SinkNode
     bool isNew(const Message & mess)const;
     
   public:
+    SinkNode(const SinkNode & other);
+    
     static SinkNode & getInstance();
     
     void processMessages();

@@ -22,6 +22,9 @@ class HistoryEntry
     /// Constructor.
     HistoryEntry(const uint8_t & sender, const unsigned short & seqNum);
     
+    /// Constructor.
+    HistoryEntry(const HistoryEntry & other);
+    
     /// Update the entry to the lastest sequence number.<br/>
     /// If the given sequence number is not newer than the current one, the update is ignored.
     void update(const unsigned short & seqNum);

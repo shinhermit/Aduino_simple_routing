@@ -8,6 +8,13 @@ HistoryEntry::HistoryEntry(const uint8_t & sender, const unsigned short & seqNum
   next(NULL)
 {}
 
+HistoryEntry::HistoryEntry(const HistoryEntry & other)
+  :_sender(other._sender),
+  _seqNum(other._seqNum),
+  previous(other.previous),
+  next(other.next)
+{}
+
 void HistoryEntry::update(const unsigned short & seqNum)
 {
   if(seqNum > _seqNum
