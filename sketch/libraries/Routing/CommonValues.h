@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #include <Arduino.h>
-#include <../XBee/XBee.h>
+#include <XBee.h>
 
 #include "String.h"
 
@@ -30,6 +30,7 @@ namespace CommonValues
 
       static const uint8_t MAC_PREFIX;
       static const uint8_t SINK_SUFFIX;
+      static const unsigned short MAX_SEQUENCE_NUMBER;
       static const Address64 SinkAddress;
       static const Address64 BroadcastAddress;
     
