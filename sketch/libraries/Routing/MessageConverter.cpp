@@ -4,6 +4,8 @@
 #include "DiscoveryMessage.h"
 #include <math.h>
 
+#include <SoftwareSerial.h>
+
 String MessageConverter::serialize(const Message & mess)
 {
   const uint8_t & macPrefix = CommonValues::Message::MAC_PREFIX;
@@ -46,6 +48,9 @@ String MessageConverter::serialize(const Message & mess)
 
 Message * MessageConverter::parse(const String & mess)
 {
+  Serial.begin(38400);
+  Serial.println("Serializing");
+
   const unsigned short NB_TOKENS = 6;
   const String & sep = CommonValues::Message::Serialization::SEPERATOR;
   

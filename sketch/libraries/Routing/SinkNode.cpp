@@ -7,9 +7,6 @@
 void SinkNode::initialize()
 {
   _xbee.begin(CommonValues::Routing::XBEE_RATE);
-  
-  Serial.begin(CommonValues::Routing::XBEE_RATE);
-  Serial.println("Sink ready.");
 }
 
 SinkNode::SinkNode()

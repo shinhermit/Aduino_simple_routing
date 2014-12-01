@@ -1,14 +1,16 @@
-#include "Alert.h"
-#include "AlertMessage.h"
-#include "DiscoveryMessage.h"
-#include "Message.h"
-#include "MessageConverter.h"
+#include <Alert.h>
+#include <AlertMessage.h>
+#include <DiscoveryMessage.h>
+#include <Message.h>
+#include <MessageConverter.h>
+#include <CommonValues.h>
+
 
 #include <SoftwareSerial.h>
 
 void setup()
 {
-  Serial.begin(38400);
+  Serial.begin(CommonValues::Routing::XBEE_RATE);
   
   Alert alert(10, 2.1f);
   AlertMessage alertMessage(0x40762066, 3, alert);

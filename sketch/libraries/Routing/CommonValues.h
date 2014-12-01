@@ -1,8 +1,10 @@
 #ifndef COMMON_VALUES_H
 #define COMMON_VALUES_H
 
+#include <stdint.h>
+
 #include <Arduino.h>
-#include <XBee.h>
+#include <../XBee/XBee.h>
 
 #include "String.h"
 
@@ -17,10 +19,19 @@ namespace CommonValues
   class Message
   {
     public:
+     struct Address64
+     {
+       Address64();
+       Address64(uint8_t prefix, uint8_t suffix);
+
+       uint8_t prefix;
+       uint8_t suffix;
+     };
+
       static const uint8_t MAC_PREFIX;
       static const uint8_t SINK_SUFFIX;
-      //static const XBeeAddress64 SINK_ADDRESS;
-      //static const XBeeAddress64 BROADCAST_ADDRESS;
+      static const Address64 SinkAddress;
+      static const Address64 BroadcastAddress;
     
     class Serialization
     {
@@ -34,7 +45,7 @@ namespace CommonValues
   {
     public:
       static const unsigned short SENSOR_VALUES_MAX_BUFFER;
-      static const int XBEE_RATE;
+      static const unsigned int XBEE_RATE;
       static const unsigned short SINK_LEVEL;
   };
 }

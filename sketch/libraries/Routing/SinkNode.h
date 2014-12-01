@@ -1,13 +1,10 @@
 #ifndef SINK_NODE_H
 #define SINK_NODE_H
 
-#include <Arduino.h>
 #include <stdint.h>
 
-#include <XBee.h>
-//#include "/home/Josuah/programs/no-installation/RESA/sketch/libraries/XBee/XBee.h"
-//#include <XBee/XBee.h>
-
+#include <Arduino.h>
+#include <../XBee/XBee.h>
 
 #include "DiscoveryMessage.h"
 #include "MessageHistory.h"
