@@ -28,7 +28,44 @@ void SourceNode::initialize(const uint8_t & myAddress, AbstractSensor & sensor)
 
 void SourceNode::processMessages()const
 {
-  
+  //Can receive two types of messages
+  // - alert to re broadcast
+  // - discover messages
+  String strMess;
+  Message * mess;
+
+  if (_xbee.getResponse().isAvailable())
+  {
+    strMess = receiveMessage();
+    
+    mess = MessageConverter::parse(strMess);
+    
+    if (_history.add(mess->getSender(), mess->getSequenceNumber())) 
+    {
+        //new message received
+        if (mess->getMessageType() == Message::ALERT) {
+            //forward alert on route to sink
+            Alert alert = mess->getAlert();
+
+        } else {
+            //discover message, we will set our level
+
+        }
+    }
+    
+//      Serial.print("Received alert from ");
+//      Serial.print(mess->getSender());
+//      Serial.println(".");
+//      Serial.print("\tType alerte: ");
+//      Serial.print(mess->getAlert().getAlertType());
+//      Serial.print(", valeur: ");
+//      Serial.println(mess->getAlert().getSensorValue());
+      
+    }
+    
+    delete mess;
+  }
+
 }
 
 float SourceNode::readSensor()const

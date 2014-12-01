@@ -1,26 +1,36 @@
 #include <XBee.h> // make it added to include path
 #include <SoftwareSerial.h>
 
-#include <SinkNode.h>
+#include <SourceNode.h>
 
+const uint8_t myAddress = 0x;
+int pinNumber = 8;
 
-SinkNode sinkNode = SinkNode::getInstance();
+HumiditySensor humiditySensor(pinNumber);
+
+SourceNode sourceNode(myAddress, humiditySensor);
+
+Alert alert(CommonValues::Alert:DEFAULT_ALERT_TYPE);
+
+float sensorValue = 0.;
 
 void setup()
 {
-  sinkNode.processMessages();
-  
-  sinkNode.discover();
+  sourceNode.processMessages();
   
   delay(5000);
 }
 
 void loop()
 {
-//  sinkNode.processMessages();
+  sourceNode.processMessages();
   
-//  sinkNode.discover();
+  sensorValue = sourceNode.readSensor();
   
-//  delay(5000);
+  alert.setSensorValue(sensorValue);
+  
+  sourceNode.sendAlert(alert);
+  
+  delay(5000);
 }
 

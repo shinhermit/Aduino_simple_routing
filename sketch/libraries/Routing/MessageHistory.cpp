@@ -21,10 +21,11 @@ MessageHistory::~MessageHistory()
   }
 }
 
-void MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
+bool MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
 {
   HistoryEntry * entry;
-  
+  bool newValue = true;
+
   if(_first == NULL)
   {
     _first = new HistoryEntry(sender, seqNum);
@@ -39,6 +40,8 @@ void MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
       if((*entry) > seqNum)
       {
         entry->update(seqNum);
+      } else {
+        newValue = false;
       }
     }
     else
@@ -48,6 +51,8 @@ void MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
       _last = _last->next;
     }
   }
+
+  return newValue;
 }
 
 void MessageHistory::remove(uint8_t sender)
