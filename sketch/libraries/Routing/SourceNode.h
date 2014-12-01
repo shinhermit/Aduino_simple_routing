@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "Alert.h"
 #include "AbstractSensor.h"
+#include "MessageHistory.h"
 #include <../XBee/XBee.h>
 
 class SourceNode
@@ -12,9 +13,14 @@ class SourceNode
     uint8_t _myAddress;
     AbstractSensor * _sensor;
     unsigned short _alertSequenceNumber;
-    unsigned short _getAlertSequenceNumber();
+    Rx16Response _rx16;
+    Rx64Response _rx64;
     XBee _xbee;
+    MessageHistory _history;
+    unsigned short _level;
+    unsigned short _getAlertSequenceNumber();
     void _sendString(const String message);
+    String receiveMessage();
     
   public:
     SourceNode(const uint8_t & myAddress, AbstractSensor & sensor);
@@ -23,10 +29,12 @@ class SourceNode
     
     void initialize(const uint8_t & myAddress, AbstractSensor & sensor);
     
-    void processMessages()const;
+    void processMessages();
     
     float readSensor()const;
     
+    void forwardAlert(const Alert & alert);
+
     void sendAlert(const Alert & alert);
 
 };

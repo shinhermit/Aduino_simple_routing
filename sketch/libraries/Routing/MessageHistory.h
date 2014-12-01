@@ -23,7 +23,7 @@ class MessageHistory
     ///   <li>if the sequence number shows a newer message, the old entry is updated;</li>
     ///   <li>otherwise, the addition is ignored.</li>
     /// </ul>
-    void add(const uint8_t & sender, const unsigned short & seqNum);
+    bool add(const uint8_t & sender, const unsigned short & seqNum);
     
     /// Deletes an entry from the history.
     void remove(uint8_t sender);

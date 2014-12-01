@@ -7,7 +7,8 @@
 SourceNode::SourceNode(const uint8_t & myAddress, AbstractSensor & sensor)
   :_myAddress(myAddress),
   _sensor(&sensor),
-  _xbee()
+  _xbee(),
+  _level(0)
 {
   _xbee.begin(CommonValues::Routing::XBEE_RATE);
 }
@@ -15,7 +16,8 @@ SourceNode::SourceNode(const uint8_t & myAddress, AbstractSensor & sensor)
 SourceNode::SourceNode()
   :_myAddress(0),
   _sensor(NULL),
-  _xbee()
+  _xbee(),
+  _level(0)
 {
   _xbee.begin(CommonValues::Routing::XBEE_RATE);
 }
@@ -26,7 +28,33 @@ void SourceNode::initialize(const uint8_t & myAddress, AbstractSensor & sensor)
   _sensor = &sensor;
 }
 
-void SourceNode::processMessages()const
+String SourceNode::receiveMessage()
+{
+  char* data;
+  uint8_t data_len;
+  
+  _xbee.readPacket();
+  
+  if (_xbee.getResponse().getApiId() == RX_16_RESPONSE)
+  {
+    _xbee.getResponse().getRx16Response(_rx16);
+    
+    data = (char*)_rx16.getData();
+    data_len = _rx16.getDataLength();     
+  } 
+  else if (_xbee.getResponse().getApiId() == RX_64_RESPONSE)
+  {
+    _xbee.getResponse().getRx64Response(_rx64);
+    
+    data = (char*)_rx64.getData();
+    data_len = _rx64.getDataLength();
+  }
+  
+  return String(data);
+}
+
+
+void SourceNode::processMessages()
 {
   //Can receive two types of messages
   // - alert to re broadcast
@@ -39,17 +67,28 @@ void SourceNode::processMessages()const
     strMess = receiveMessage();
     
     mess = MessageConverter::parse(strMess);
-    
+    unsigned short senderLevel = mess->getSenderLevel();
+
     if (_history.add(mess->getSender(), mess->getSequenceNumber())) 
     {
         //new message received
-        if (mess->getMessageType() == Message::ALERT) {
-            //forward alert on route to sink
-            Alert alert = mess->getAlert();
-
-        } else {
-            //discover message, we will set our level
-
+        if (senderLevel > _level && mess->getMessageType() == Message::ALERT) 
+        {
+            //forward alert on route to sink without modification
+            _sendStr(strMess);
+        } 
+        else 
+        {
+            //discovery message, let's set our level if apprpriate
+            if (mess->getMessageType() == Message::DISCOVERY) 
+            {
+                if (_level == 0) 
+                {
+                    _level = senederLevel + 1;
+                    //update senderLevel in message
+                    mess->setSenderLevel(_level);
+                }
+            }
         }
     }
     
@@ -64,13 +103,17 @@ void SourceNode::processMessages()const
     }
     
     delete mess;
-  }
-
 }
+
 
 float SourceNode::readSensor()const
 {
   return _sensor->readValue();
+}
+
+void SourceNode::forwardAlert(const Alert & alert)
+{
+        
 }
 
 void SourceNode::sendAlert(const Alert & alert)
