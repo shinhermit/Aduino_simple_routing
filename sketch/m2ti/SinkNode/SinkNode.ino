@@ -15,8 +15,8 @@ void loop()
 {
   delay(5000);
   
-//  sinkNode.processMessages();
+  sinkNode.processMessages();
   
-  sinkNode.discover();
+//  sinkNode.discover();
 }
 

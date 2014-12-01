@@ -41,9 +41,10 @@ String SinkNode::receiveMessage()
   char* data;
   uint8_t data_len;
   
-  _xbee.readPacket();
-  
-  if (_xbee.getResponse().getApiId() == RX_16_RESPONSE)
+  if (_xbee.getResponse().getApiId() == TX_STATUS_RESPONSE)
+  {
+  }
+  else if (_xbee.getResponse().getApiId() == RX_16_RESPONSE)
   {
     _xbee.getResponse().getRx16Response(_rx16);
     
@@ -80,10 +81,19 @@ void SinkNode::processMessages()
   String strMess;
   Message * mess;
 
+  Serial.println("Processing messages");
+
+  _xbee.readPacket();
+
   if (_xbee.getResponse().isAvailable())
   {
+    Serial.println("Message available");
+
     strMess = receiveMessage();
     
+    Serial.print("Received message: ");
+    Serial.println(strMess);
+
     mess = MessageConverter::parse(strMess);
     
     if(mess->getMessageType() == Message::ALERT
