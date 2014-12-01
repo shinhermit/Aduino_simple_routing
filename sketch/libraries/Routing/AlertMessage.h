@@ -18,9 +18,9 @@ class AlertMessage : public Message
   
   AlertMessage & operator=(const AlertMessage & other);
 
-  Alert getAlert()const;
+  virtual Alert getAlert()const;
 
-  void setAlert(const Alert & type);
+  virtual void setAlert(const Alert & alert);
 };
 
 #endif

@@ -11,6 +11,8 @@ class MessageConverter
     
     static void getTokens(const String & mess, const String & seperator,
                           const unsigned short nbTokens, String * fillMe);
+
+    static String floatToString(const float & val);
     
   public:
   

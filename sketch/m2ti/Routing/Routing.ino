@@ -8,6 +8,17 @@
 
 #include <SoftwareSerial.h>
 
+void printMessage(const Message & mess)
+{
+  Serial.println(String("sender: ")+mess.getSender()
+                 +String(", messageType: ")+mess.getMessageType()
+                 +String(", senderLevel: ")+mess.getSenderLevel()
+                 +String(", sequence number: ")+mess.getSequenceNumber()
+                 +String(", alert type: ")+mess.getAlert().getAlertType()
+                 +String(", sensor value: ")+mess.getAlert().getSensorValue()
+                 );
+}
+
 void setup()
 {
   Serial.begin(CommonValues::Routing::XBEE_RATE);
@@ -25,24 +36,30 @@ void setup()
   unsigned short senderLevel = 20;
   unsigned short alertType = 10;
   float sensorValue = 2.1;
-  String strDiscovery = String("/@")+sink+String("#")+1+String("#")+seqNum+String("#")+senderLevel+String("###");
-  String strAlert = String("/@")+sink+String("#")+0+String("#")+seqNum+String("##")+alertType+String("#")+sensorValue;
+  String strAlert = String("/@")+sink+String("#")+0+String("##")+seqNum+String("#")+alertType+String("#")+sensorValue;
+  String strDiscovery = String("/@")+sink+String("#")+1+String("#")+senderLevel+String("#")+seqNum+String("##");
   
-  Serial.println("Parsing");
-  Serial.println( strDiscovery );
+  Serial.println("Messages to parse:");
   Serial.println( strAlert );
+  Serial.println( strDiscovery );
   
-  Message * parsedDiscovery = MessageConverter::parse(strDiscovery);
+  Serial.println("Parsing.");
   Message * parsedAlert = MessageConverter::parse(strAlert);
+  Message * parsedDiscovery = MessageConverter::parse(strDiscovery);
+
+  // DEBUG
+  printMessage(*parsedAlert);
+  printMessage(*parsedDiscovery);
   
   Serial.println("Serializing parsed");
-  Serial.println( MessageConverter::serialize(*parsedDiscovery) );
   Serial.println( MessageConverter::serialize(*parsedAlert) );
+  Serial.println( MessageConverter::serialize(*parsedDiscovery) );
   
-  delete parsedDiscovery;
   delete parsedAlert;
+  delete parsedDiscovery;
 }
 
 void loop()
 {
 }
+

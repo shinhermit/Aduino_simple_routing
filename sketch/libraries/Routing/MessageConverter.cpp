@@ -18,38 +18,61 @@ String MessageConverter::serialize(const Message & mess)
   String seqNum = "";
   String alertType = "";
   String sensorValue = "";
+  String res;
+
+  Serial.println("MessageConverter::Serializing");
+  Serial.println(String("sender: ")+mess.getSender()
+                 +String(", messageType: ")+mess.getMessageType()
+                 +String(", senderLevel: ")+mess.getSenderLevel()
+                 +String(", sequence number: ")+mess.getSequenceNumber()
+                 +String(", alert type: ")+mess.getAlert().getAlertType()
+                 +String(", sensor value: ")+mess.getAlert().getSensorValue()
+                 );
   
   // Always present
-  sender += macPrefix*pow(16, 4) + mess.getSender();
-  messageType += mess.getMessageType();
-  seqNum += mess.getSequenceNumber();
+  sender += int(macPrefix*pow(16, 4) + mess.getSender());
+  messageType += int(mess.getMessageType());
+  seqNum += int(mess.getSequenceNumber());
+  Serial.println(String("Sequence number: ")+seqNum);
   
   // Discovery only
   if(mess.getMessageType() == Message::DISCOVERY)
   {
-    senderLevel += mess.getSenderLevel();
+    senderLevel += int(mess.getSenderLevel());
   }
   
   // Alert only
   if(mess.getMessageType() == Message::ALERT)
   {
-    alertType += mess.getAlert().getAlertType();
-    sensorValue += mess.getAlert().getSensorValue();
+    alertType += int(mess.getAlert().getAlertType());
+    sensorValue += floatToString(mess.getAlert().getSensorValue());
   }
   
-  return prefix +
+  res = prefix +
          sender + sep +
          messageType + sep +
          senderLevel + sep +
          seqNum + sep +
          alertType + sep +
          sensorValue;
+  Serial.println(String("Result: ")+res);
+
+  return res;
+}
+
+String MessageConverter::floatToString(const float & val)
+{
+  int ent, dec;
+
+  ent = int(val);
+  dec = int((val - ent)*100);
+
+  return String("")+ent+String(".")+dec;
 }
 
 Message * MessageConverter::parse(const String & mess)
 {
-  Serial.begin(38400);
-  Serial.println("Serializing");
+  Serial.println("MessageConverter::Parsing");
 
   const unsigned short NB_TOKENS = 6;
   const String & sep = CommonValues::Message::Serialization::SEPERATOR;
@@ -66,21 +89,36 @@ Message * MessageConverter::parse(const String & mess)
   
   String tokens[NB_TOKENS];
   MessageConverter::getTokens(mess, sep, NB_TOKENS, tokens);
+
+  // DEBUG
+  for(int i = 0; i < NB_TOKENS; ++i)
+    {
+      Serial.println(String("token ")+i+String(": ")+String(tokens[i]));
+    }
   
   sender = (uint8_t) tokens[0].toInt();
   messageType = (Message::MessageType)tokens[1].toInt();
-  seqNum = (unsigned short)tokens[2].toInt();
-    
+  seqNum = (unsigned short)tokens[3].toInt();
+
+  // DEBUG
+  Serial.println(String("Fetched sender: ")+sender); 
+  Serial.println(String("Fetched messageType: ")+messageType);
+  Serial.println(String("Fetched seqNum: ")+seqNum);
+   
   switch(messageType)
   {
-    case Message::ALERT:
+  case Message::ALERT:
       alert.setAlertType((unsigned short)tokens[4].toInt());
       alert.setSensorValue(tokens[5].toFloat());
+      
+      //DEBUG
+      Serial.println(String("Fetched alert type: ")+alert.getAlertType()); 
+      Serial.println(String("Fetched sensor value: ")+alert.getSensorValue());
       
       message = new AlertMessage(sender, seqNum, alert);
       break;
     case Message::DISCOVERY:
-      senderLevel = (unsigned short)tokens[3].toInt();
+      senderLevel = (unsigned short)tokens[2].toInt();
       
       message = new DiscoveryMessage(sender, seqNum, senderLevel);
       break;
