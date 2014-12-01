@@ -4,6 +4,8 @@
 
 #include <SoftwareSerial.h>
 
+SinkNode SinkNode::_instance = SinkNode::SinkNode();
+
 void SinkNode::initialize()
 {
   _xbee.begin(CommonValues::Routing::XBEE_RATE);
@@ -31,7 +33,7 @@ SinkNode::SinkNode(const SinkNode & other)
 
 SinkNode & SinkNode::getInstance()
 {
-  return _instance;
+  return SinkNode::_instance;
 }
 
 String SinkNode::receiveMessage()

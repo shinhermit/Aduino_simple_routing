@@ -1,10 +1,16 @@
+/*
+ * NOTE: One need to include <XBee.h> in the sketch main file
+ * in order to make the latter library added to the include path.
+ */
+
 #ifndef SINK_NODE_H
 #define SINK_NODE_H
 
 #include <stdint.h>
 
 #include <Arduino.h>
-#include <../XBee/XBee.h>
+
+#include <XBee.h>
 
 #include "DiscoveryMessage.h"
 #include "MessageHistory.h"
