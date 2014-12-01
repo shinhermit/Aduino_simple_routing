@@ -2,25 +2,21 @@
 #include <SoftwareSerial.h>
 
 #include <SinkNode.h>
-
+#include <CommonValues.h>
 
 SinkNode sinkNode = SinkNode::getInstance();
 
 void setup()
 {
-  sinkNode.processMessages();
-  
-  sinkNode.discover();
-  
-  delay(5000);
+  Serial.begin(CommonValues::Routing::XBEE_RATE);
 }
 
 void loop()
 {
+  delay(5000);
+  
 //  sinkNode.processMessages();
   
-//  sinkNode.discover();
-  
-//  delay(5000);
+  sinkNode.discover();
 }
 

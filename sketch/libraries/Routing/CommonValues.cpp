@@ -7,6 +7,8 @@ const uint8_t CommonValues::Message::MAC_PREFIX = 0x0013A200;
 
 const uint8_t CommonValues::Message::SINK_SUFFIX = 0x40762066;
 
+const unsigned short CommonValues::Message::MAX_SEQUENCE_NUMBER = 5;
+
 const CommonValues::Message::Address64 CommonValues::Message::SinkAddress(0x0013A200, 0x40762066);
 const CommonValues::Message::Address64 CommonValues::Message::BroadcastAddress(0x00000000, 0x0000FFFF);
 

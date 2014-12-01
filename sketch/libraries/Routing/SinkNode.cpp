@@ -110,6 +110,8 @@ void SinkNode::broadcastMessage(const DiscoveryMessage & mess)
   String serialMess = MessageConverter::serialize(mess);
   char strMess[serialMess.length()];
   serialMess.toCharArray(strMess, serialMess.length());
+
+  Serial.println(String("Broadcasting message: ")+strMess);
   
   // Send xbee request
   XBeeAddress64 addr = XBeeAddress64(0x00000000, 0x0000FFFF);
@@ -123,6 +125,8 @@ void SinkNode::broadcastMessage(const DiscoveryMessage & mess)
 
 void SinkNode::discover()
 {
+  unsigned short maxSeq = CommonValues::Message::MAX_SEQUENCE_NUMBER;
+
   DiscoveryMessage mess(
         CommonValues::Message::SINK_SUFFIX,
         _seqNum,
@@ -130,6 +134,6 @@ void SinkNode::discover()
         
   broadcastMessage(mess);
   
-  _seqNum = (_seqNum + 1) % 256;
+  _seqNum = (_seqNum + 1) % maxSeq;
 }
 
