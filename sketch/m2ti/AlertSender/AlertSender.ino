@@ -37,7 +37,7 @@ void loop() {
   char strMess[serialMess.length()];
   serialMess.toCharArray(strMess, serialMess.length());
 
-  Serial.println(String("Broadcasting message: ")+strMess);
+  Serial.println(String("\nBroadcasting message: ")+strMess);
   
   // Send xbee request
   XBeeAddress64 addr = XBeeAddress64(0x00000000, 0x0000FFFF);

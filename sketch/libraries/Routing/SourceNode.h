@@ -5,7 +5,7 @@
 #include "Alert.h"
 #include "AbstractSensor.h"
 #include "MessageHistory.h"
-#include <../XBee/XBee.h>
+#include <XBee.h>
 
 class SourceNode
 {
@@ -18,8 +18,9 @@ class SourceNode
     XBee _xbee;
     MessageHistory _history;
     unsigned short _level;
+
     unsigned short _getAlertSequenceNumber();
-    void _sendString(const String message);
+    void _sendString(const String & message);
     String receiveMessage();
     
   public:

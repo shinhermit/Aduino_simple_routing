@@ -1,8 +1,9 @@
 #include "SourceNode.h"
 #include "MessageConverter.h"
 #include "AlertMessage.h"
-#include <../XBee/XBee.h>
 #include "CommonValues.h"
+
+#include <SoftwareSerial.h>
 
 SourceNode::SourceNode(const uint8_t & myAddress, AbstractSensor & sensor)
   :_myAddress(myAddress),
@@ -123,11 +124,13 @@ void SourceNode::sendAlert(const Alert & alert)
   _sendString(MessageConverter::serialize(alertMessage));
 }
 
-void SourceNode::_sendString(const String message)
+void SourceNode::_sendString(const String & message)
 {
   // Serialize the message
   char strMess[message.length()];
   message.toCharArray(strMess, message.length());
+
+  Serial.println(String("\nSending ")+strMess);
   
   // Send xbee request
   XBeeAddress64 addr = XBeeAddress64(0x00000000, 0x0000FFFF);

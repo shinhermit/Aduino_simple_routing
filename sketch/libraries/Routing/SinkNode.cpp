@@ -81,33 +81,41 @@ void SinkNode::processMessages()
   String strMess;
   Message * mess;
 
-  Serial.println("Processing messages");
+  Serial.println("Checking message buffer.");
 
   _xbee.readPacket();
 
   if (_xbee.getResponse().isAvailable())
   {
-    Serial.println("Message available");
+    Serial.println("Message available.");
 
     strMess = receiveMessage();
     
-    Serial.print("Received message: ");
-    Serial.println(strMess);
-
     mess = MessageConverter::parse(strMess);
     
-    if(mess->getMessageType() == Message::ALERT
-        && isNew(*mess))
+    if(mess->getMessageType() == Message::ALERT)
     {
-      Serial.print("Received alert from ");
-      Serial.print(mess->getSender());
-      Serial.println(".");
-      Serial.print("\tType alerte: ");
-      Serial.print(mess->getAlert().getAlertType());
-      Serial.print(", valeur: ");
-      Serial.println(mess->getAlert().getSensorValue());
+      if(isNew(*mess))
+      {
+	Serial.print("\n\n\nReceived alert from ");
+	Serial.print(mess->getSender());
+	Serial.println(".");
+	Serial.print("\tType alerte: ");
+	Serial.print(mess->getAlert().getAlertType());
+	Serial.print(", valeur: ");
+	Serial.println(mess->getAlert().getSensorValue());
+	Serial.print("\n\n");
       
-      _history.add(mess->getSender(), mess->getSequenceNumber());
+	_history.add(mess->getSender(), mess->getSequenceNumber());
+      }
+      else
+      {
+	Serial.println(String("Message ")+strMess+String(" found in history."));
+      }
+    }
+    else
+    {
+      Serial.println("Message is not an alert.");
     }
     
     delete mess;

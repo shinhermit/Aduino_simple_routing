@@ -16,14 +16,12 @@ float sensorValue = 0.;
 
 void setup()
 {
-  sourceNode.processMessages();
-  
-  delay(5000);
+  Serial.begin(CommonValues::Routing::XBEE_RATE);
 }
 
 void loop()
 {
-  sourceNode.processMessages();
+  //sourceNode.processMessages();
   
   sensorValue = sourceNode.readSensor();
   

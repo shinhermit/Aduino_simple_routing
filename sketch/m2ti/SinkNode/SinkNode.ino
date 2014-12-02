@@ -13,10 +13,10 @@ void setup()
 
 void loop()
 {
-  delay(5000);
-  
   sinkNode.processMessages();
   
 //  sinkNode.discover();
+
+  delay(4000);
 }
 
