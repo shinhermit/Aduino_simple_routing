@@ -75,7 +75,7 @@ void SourceNode::processMessages()
         if (senderLevel > _level && mess->getMessageType() == Message::ALERT) 
         {
             //forward alert on route to sink without modification
-            _sendStr(strMess);
+            _sendString(strMess);
         } 
         else 
         {
@@ -84,7 +84,7 @@ void SourceNode::processMessages()
             {
                 if (_level == 0) 
                 {
-                    _level = senederLevel + 1;
+                    _level = senderLevel + 1;
                     //update senderLevel in message
                     mess->setSenderLevel(_level);
                 }
