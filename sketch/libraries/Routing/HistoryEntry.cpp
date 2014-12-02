@@ -1,5 +1,6 @@
-#include <stdlib.h>
 #include "HistoryEntry.h"
+#include <stdlib.h>
+#include <CommonValues.h>
 
 HistoryEntry::HistoryEntry(const uint8_t & sender, const unsigned short & seqNum)
   :_sender(sender),
@@ -17,8 +18,10 @@ HistoryEntry::HistoryEntry(const HistoryEntry & other)
 
 void HistoryEntry::update(const unsigned short & seqNum)
 {
+  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
+
   if(seqNum > _seqNum
-      || (seqNum == 0 && _seqNum==255))
+      || (seqNum == 0 && _seqNum == maxSeq))
   {
     _seqNum = seqNum;
   }
@@ -31,13 +34,17 @@ bool HistoryEntry::operator==(const HistoryEntry & other)const
 
 bool HistoryEntry::operator >(const HistoryEntry & other)const
 {
+  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
+
   return (_sender == other._sender &&
-           ( _seqNum > other._seqNum || (_seqNum == 0 && other._seqNum==255) ));
+           ( _seqNum > other._seqNum || (_seqNum == 0 && other._seqNum == maxSeq) ));
 }
 
 bool HistoryEntry::operator >(const unsigned short & seqNum)const
 {
-  return ( _seqNum > seqNum || (_seqNum == 0 && seqNum==255) );
+  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
+
+  return ( _seqNum > seqNum || (_seqNum == 0 && seqNum == maxSeq) );
 }
 
 bool HistoryEntry::operator <(const HistoryEntry & other)const

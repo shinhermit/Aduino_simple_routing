@@ -2,7 +2,9 @@
 #include "CommonValues.h"
 #include "AlertMessage.h"
 #include "DiscoveryMessage.h"
+
 #include <math.h>
+#include <stdlib.h>
 
 #include <SoftwareSerial.h>
 
@@ -20,7 +22,7 @@ String MessageConverter::serialize(const Message & mess)
   String sensorValue = "";
   
   // Always present
-  sender += int(macPrefix*pow(16, 4) + mess.getSender());
+  sender += String(mess.getSender(), HEX);
   messageType += int(mess.getMessageType());
   seqNum += int(mess.getSequenceNumber());
   
@@ -51,7 +53,7 @@ String MessageConverter::floatToString(const float & val)
   int ent, dec;
 
   ent = int(val);
-  dec = int((val - ent)*100);
+  dec = int((val - ent)*1000);
 
   return String("")+ent+String(".")+dec;
 }
@@ -74,7 +76,10 @@ Message * MessageConverter::parse(const String & mess)
   String tokens[NB_TOKENS];
   MessageConverter::getTokens(mess, sep, NB_TOKENS, tokens);
   
-  sender = (uint8_t) tokens[0].toInt();
+  char hexString[8];
+  tokens[0].toCharArray(hexString, 8);
+  sender = strtoul(hexString, (char**)0, 0);
+
   messageType = (Message::MessageType)tokens[1].toInt();
   seqNum = (unsigned short)tokens[3].toInt();
    

@@ -30,9 +30,9 @@ namespace CommonValues
 
       static const uint8_t MAC_PREFIX;
       static const uint8_t SINK_SUFFIX;
-      static const unsigned short MAX_SEQUENCE_NUMBER;
-      static const Address64 SinkAddress;
-      static const Address64 BroadcastAddress;
+      static const uint8_t BROADCAST_PREFIX;
+      static const uint8_t BROADCAST_SUFFIX;
+      static const unsigned short SEQUENCE_NUMBER_MOD;
     
     class Serialization
     {
@@ -48,6 +48,8 @@ namespace CommonValues
       static const unsigned short SENSOR_VALUES_MAX_BUFFER;
       static const unsigned int XBEE_RATE;
       static const unsigned short SINK_LEVEL;
+      static const unsigned short SINK_DELAY;
+      static const unsigned short SOURCE_DELAY;
   };
 }
 

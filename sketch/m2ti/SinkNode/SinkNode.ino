@@ -17,6 +17,6 @@ void loop()
   
 //  sinkNode.discover();
 
-  delay(4000);
+  delay(CommonValues::Routing::SINK_DELAY);
 }
 

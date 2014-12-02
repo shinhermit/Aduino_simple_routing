@@ -7,10 +7,11 @@ const uint8_t CommonValues::Message::MAC_PREFIX = 0x0013A200;
 
 const uint8_t CommonValues::Message::SINK_SUFFIX = 0x40762066;
 
-const unsigned short CommonValues::Message::MAX_SEQUENCE_NUMBER = 5;
+const uint8_t CommonValues::Message::BROADCAST_PREFIX = 0x00000000;
 
-const CommonValues::Message::Address64 CommonValues::Message::SinkAddress(0x0013A200, 0x40762066);
-const CommonValues::Message::Address64 CommonValues::Message::BroadcastAddress(0x00000000, 0x0000FFFF);
+const uint8_t CommonValues::Message::BROADCAST_SUFFIX = 0x0000FFFF;
+
+const unsigned short CommonValues::Message::SEQUENCE_NUMBER_MOD = 256;
 
 const String CommonValues::Message::Serialization::PREFIX = "/@";
 
@@ -22,13 +23,6 @@ const unsigned int CommonValues::Routing::XBEE_RATE = 38400;
 
 const unsigned short CommonValues::Routing::SINK_LEVEL = 0;
 
+const unsigned short CommonValues::Routing::SINK_DELAY = 4000;
 
-CommonValues::Message::Address64::Address64()
-  :prefix(0),
-   suffix(0)
-{}
-
-CommonValues::Message::Address64::Address64(uint8_t pref, uint8_t suf)
-  :prefix(pref),
-   suffix(suf)
-{}
+const unsigned short CommonValues::Routing::SOURCE_DELAY = 5000;

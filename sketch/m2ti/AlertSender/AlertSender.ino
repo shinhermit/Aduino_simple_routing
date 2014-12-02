@@ -10,24 +10,22 @@ XBee xbee = XBee();
 unsigned short seqNum = 0;
 float sensorValue = -10.0;
 
-void setup() {
+void setup()
+{
   
-  xbee.begin(38400);
+  xbee.begin(CommonValues::Routing::XBEE_RATE);
   
-  Serial.begin(38400);
+  Serial.begin(CommonValues::Routing::XBEE_RATE);
+  
   Serial.println("Arduino. Will send packets.");
 }
 
-void loop() {
-  
-  delay(5000);
+void loop()
+{
     
-  // 64-bit addressing: This is the SH + SL address of remote XBee
-  XBeeAddress64 addr64 = XBeeAddress64(0x00000000, 0x0000FFFF);
-  
   // Create an alert message
   sensorValue += 1.0;
-  seqNum = (seqNum + 1) % CommonValues::Message::MAX_SEQUENCE_NUMBER;
+  seqNum = (seqNum + 1) % CommonValues::Message::SEQUENCE_NUMBER_MOD;
   
   Alert alert(Message::ALERT, sensorValue);
   AlertMessage mess(0x40922070, seqNum, alert);
@@ -40,12 +38,17 @@ void loop() {
   Serial.println(String("\nBroadcasting message: ")+strMess);
   
   // Send xbee request
-  XBeeAddress64 addr = XBeeAddress64(0x00000000, 0x0000FFFF);
-  Tx64Request tx = Tx64Request(addr,//CommonValues::Message::BROADCAST_ADDRESS,
+  XBeeAddress64 addr64 = XBeeAddress64(
+			    CommonValues::Message::BROADCAST_PREFIX,
+			    CommonValues::Message::BROADCAST_SUFFIX);
+  
+  Tx64Request tx = Tx64Request(addr64,
                                 (uint8_t*)strMess,
-                                sizeof(strMess));  
+                                sizeof(strMess));
   // Send your request
   xbee.send(tx);
 
   TxStatusResponse txStatus = TxStatusResponse();
+  
+  delay(CommonValues::Routing::SOURCE_DELAY);
 }
