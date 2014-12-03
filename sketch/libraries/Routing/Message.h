@@ -2,7 +2,6 @@
 #define MESSAGE_H
 
 #include "Alert.h"
-#include <stdint.h>
 
 class Message
 {
@@ -16,10 +15,10 @@ class Message
   
   static const MessageType DEFAULT_TYPE;
 
-  Message(const MessageType & type, const uint8_t & sender,
+  Message(const MessageType & type, const unsigned long & sender,
 		 const unsigned short & seqNum);
 
-  Message(const uint8_t & sender, const unsigned short & seqNum);
+  Message(const unsigned long & sender, const unsigned short & seqNum);
   
   Message(const Message & other);
   
@@ -28,11 +27,11 @@ class Message
   Message & operator=(const Message & other);
 
   MessageType getMessageType()const;
-  uint8_t getSender()const;
+  unsigned long getSender()const;
   unsigned short getSequenceNumber()const;
 
   void setMessageType(const MessageType & type);
-  void setSender(const uint8_t & sender);
+  void setSender(const unsigned long & sender);
   void setSequenceNumber(const unsigned short & seqNum);
   
   // For subclasses
@@ -44,7 +43,7 @@ class Message
   
  private:
   MessageType _messageType;
-  uint8_t _sender;
+  unsigned long _sender;
   unsigned short _seqNum;
 
 };

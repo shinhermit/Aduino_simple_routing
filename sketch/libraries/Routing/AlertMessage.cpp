@@ -1,6 +1,6 @@
 #include "AlertMessage.h"
 
-AlertMessage::AlertMessage(const uint8_t & sender, const unsigned short & seqNum,
+AlertMessage::AlertMessage(const unsigned long & sender, const unsigned short & seqNum,
 		 const Alert & alert)
   :Message::Message(Message::ALERT, sender, seqNum),
   _alert(alert)

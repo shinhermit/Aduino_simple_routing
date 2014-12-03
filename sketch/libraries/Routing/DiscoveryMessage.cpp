@@ -1,6 +1,6 @@
 #include "DiscoveryMessage.h"
 
-DiscoveryMessage::DiscoveryMessage(const uint8_t & sender, const unsigned short & seqNum,
+DiscoveryMessage::DiscoveryMessage(const unsigned long & sender, const unsigned short & seqNum,
 		 const unsigned short & senderLevel)
   :Message::Message(Message::DISCOVERY, sender, seqNum),
   _senderLevel(senderLevel)

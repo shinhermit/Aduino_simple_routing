@@ -10,11 +10,10 @@
 
 String MessageConverter::serialize(const Message & mess)
 {
-  const uint8_t & macPrefix = CommonValues::Message::MAC_PREFIX;
   const String & prefix = CommonValues::Message::Serialization::PREFIX;
   const String & sep = CommonValues::Message::Serialization::SEPERATOR;
   
-  String sender = "";
+  char sender[9];
   String messageType = "";
   String senderLevel = "";
   String seqNum = "";
@@ -22,7 +21,7 @@ String MessageConverter::serialize(const Message & mess)
   String sensorValue = "";
   
   // Always present
-  sender += String(mess.getSender(), HEX);
+  sprintf(sender, "%08lX", mess.getSender());
   messageType += int(mess.getMessageType());
   seqNum += int(mess.getSequenceNumber());
   
@@ -66,7 +65,7 @@ Message * MessageConverter::parse(const String & mess)
   Message * message;
   
   Message::MessageType messageType;
-  uint8_t sender;
+  unsigned long sender;
   unsigned short seqNum;
   
   unsigned short senderLevel;
@@ -76,9 +75,11 @@ Message * MessageConverter::parse(const String & mess)
   String tokens[NB_TOKENS];
   MessageConverter::getTokens(mess, sep, NB_TOKENS, tokens);
   
-  char hexString[8];
-  tokens[0].toCharArray(hexString, 8);
-  sender = strtoul(hexString, (char**)0, 0);
+  char hexString[9];
+  Serial.println("Tokens[0]: "+tokens[0]);
+  tokens[0].toCharArray(hexString, 9);
+  Serial.print("hexString: "); Serial.println(hexString);
+  sender = strtoul(hexString, (char**)0, 16);
 
   messageType = (Message::MessageType)tokens[1].toInt();
   seqNum = (unsigned short)tokens[3].toInt();

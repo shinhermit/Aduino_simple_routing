@@ -11,7 +11,7 @@ class AlertMessage : public Message
 
  public:
 
-  AlertMessage(const uint8_t & sender, const unsigned short & seqNum,
+  AlertMessage(const unsigned long & sender, const unsigned short & seqNum,
 		 const Alert & alert);
 
   AlertMessage(const AlertMessage & other);
