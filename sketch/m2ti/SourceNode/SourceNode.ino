@@ -21,13 +21,13 @@ void setup()
 
 void loop()
 {
-  //sourceNode.processMessages();
+  sourceNode.processMessages();
   
-  sensorValue = sourceNode.readSensor();
+  //sensorValue = sourceNode.readSensor();
   
-  alert.setSensorValue(sensorValue);
+  //alert.setSensorValue(sensorValue);
   
-  sourceNode.sendAlert(alert);
+  //sourceNode.sendAlert(alert);
   
   delay(5000);
 }

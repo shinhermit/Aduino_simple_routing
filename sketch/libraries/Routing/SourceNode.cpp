@@ -9,7 +9,10 @@ SourceNode::SourceNode(const uint8_t & myAddress, AbstractSensor & sensor)
   :_myAddress(myAddress),
   _sensor(&sensor),
   _xbee(),
-  _level(0)
+  _level(0),
+  _lastDiscoverySequence(0),
+  _lastAlertSequence(0),
+  _firstDiscovery(true)   
 {
   _xbee.begin(CommonValues::Routing::XBEE_RATE);
 }
@@ -18,7 +21,10 @@ SourceNode::SourceNode()
   :_myAddress(0),
   _sensor(NULL),
   _xbee(),
-  _level(0)
+  _level(0),
+  _lastDiscoverySequence(0),
+  _lastAlertSequence(0),
+  _firstDiscovery(true)   
 {
   _xbee.begin(CommonValues::Routing::XBEE_RATE);
 }
@@ -54,8 +60,63 @@ String SourceNode::receiveMessage()
   return String(data);
 }
 
-
+//Process broadcast messages
 void SourceNode::processMessages()
+{
+
+  Serial.println("\nAbout to processMessages()");
+  //Can receive two types of messages
+  // - alert to re broadcast
+  // - discover messages
+  String strMess;
+  Message * mess;
+
+  if (_xbee.getResponse().isAvailable())
+  {
+    strMess = receiveMessage();
+    
+    mess = MessageConverter::parse(strMess);
+    
+    if (_history.add(mess->getSender(), mess->getSequenceNumber())) 
+    {
+
+        Serial.println("New message discovered");
+        //new message received
+        
+        //if message type == ALERT => forward if discovery already received
+        if (mess->getMessageType() == Message::ALERT) 
+        {
+            Serial.println("Alert");
+            if (_level > 0)//discovery already received 
+            {
+                //forward alert on route to sink without modification
+                _sendString(strMess);
+                //sendAlert(mess->getAlert());
+             }
+
+        } 
+        else 
+        {
+            Serial.println("Discovery");
+            //discovery message
+            if (_lastDiscoverySequence != mess->getSequenceNumber() && !_firstDiscovery)
+            {
+                Serial.println("Setting own level");
+                _firstDiscovery = true;
+                _level = mess->getSenderLevel() + 1;
+                mess->setSenderLevel(_level);
+                _sendString(MessageConverter::serialize(* mess));
+            }
+        }
+    }
+    
+      
+  }
+    
+  delete mess;
+}
+
+/*void SourceNode::processMessages()
 {
   //Can receive two types of messages
   // - alert to re broadcast
@@ -71,7 +132,7 @@ void SourceNode::processMessages()
     unsigned short senderLevel = mess->getSenderLevel();
 
     if (_history.add(mess->getSender(), mess->getSequenceNumber())) 
-    {
+    
         //new message received
         if (senderLevel > _level && mess->getMessageType() == Message::ALERT) 
         {
@@ -93,19 +154,12 @@ void SourceNode::processMessages()
         }
     }
     
-//      Serial.print("Received alert from ");
-//      Serial.print(mess->getSender());
-//      Serial.println(".");
-//      Serial.print("\tType alerte: ");
-//      Serial.print(mess->getAlert().getAlertType());
-//      Serial.print(", valeur: ");
-//      Serial.println(mess->getAlert().getSensorValue());
       
-    }
+  }
     
-    delete mess;
+  delete mess;
 }
-
+*/
 
 float SourceNode::readSensor()const
 {
@@ -123,6 +177,15 @@ void SourceNode::sendAlert(const Alert & alert)
 
   _sendString(MessageConverter::serialize(alertMessage));
 }
+
+void SourceNode::sendDiscovery(const DiscoveryMessage & discovery)
+{
+}
+
+void SourceNode::sendMessage(const Message & message)
+{
+}
+
 
 void SourceNode::_sendString(const String & message)
 {

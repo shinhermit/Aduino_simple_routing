@@ -2,10 +2,12 @@
 #define SOURCE_NODE_H
 
 #include <stdint.h>
-#include "Alert.h"
-#include "AbstractSensor.h"
-#include "MessageHistory.h"
+#include <Alert.h>
+#include <AbstractSensor.h>
+#include <MessageHistory.h>
 #include <XBee.h>
+#include <DiscoveryMessage.h>
+#include <Message.h>
 
 class SourceNode
 {
@@ -18,6 +20,9 @@ class SourceNode
     XBee _xbee;
     MessageHistory _history;
     unsigned short _level;
+    unsigned short _lastDiscoverySequence;
+    unsigned short _lastAlertSequence;
+    bool _firstDiscovery;
 
     unsigned short _getAlertSequenceNumber();
     void _sendString(const String & message);
@@ -37,6 +42,8 @@ class SourceNode
     void forwardAlert(const Alert & alert);
 
     void sendAlert(const Alert & alert);
+    void sendDiscovery(const DiscoveryMessage & discoveryMessage);
+    void sendMessage(const Message & message);
 
 };
 
