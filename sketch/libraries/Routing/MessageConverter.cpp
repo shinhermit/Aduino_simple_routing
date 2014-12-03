@@ -76,9 +76,7 @@ Message * MessageConverter::parse(const String & mess)
   MessageConverter::getTokens(mess, sep, NB_TOKENS, tokens);
   
   char hexString[9];
-  Serial.println("Tokens[0]: "+tokens[0]);
   tokens[0].toCharArray(hexString, 9);
-  Serial.print("hexString: "); Serial.println(hexString);
   sender = strtoul(hexString, (char**)0, 16);
 
   messageType = (Message::MessageType)tokens[1].toInt();
