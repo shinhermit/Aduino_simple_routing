@@ -2,14 +2,14 @@
 
 const Message::MessageType Message::DEFAULT_TYPE = Message::ALERT;
 
-Message::Message(const Message::MessageType & type, const uint8_t & sender,
+Message::Message(const Message::MessageType & type, const unsigned long & sender,
 		 const unsigned short & seqNum)
   :_messageType(type),
   _sender(sender),
   _seqNum(seqNum)
 {}
 
-Message::Message(const uint8_t & sender, const unsigned short & seqNum)
+Message::Message(const unsigned long & sender, const unsigned short & seqNum)
   :_messageType(Message::DEFAULT_TYPE),
   _sender(sender),
   _seqNum(seqNum)
@@ -41,7 +41,7 @@ Message::MessageType Message::getMessageType()const
   return _messageType;
 }
 
-uint8_t Message::getSender()const
+unsigned long Message::getSender()const
 {
   return _sender;
 }
@@ -56,7 +56,7 @@ void Message::setMessageType(const MessageType & messageType)
   _messageType = messageType;
 }
 
-void Message::setSender(const uint8_t & sender)
+void Message::setSender(const unsigned long & sender)
 {
   _sender = sender;
 }

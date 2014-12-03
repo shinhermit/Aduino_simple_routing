@@ -9,7 +9,7 @@ class DiscoveryMessage : public Message
   unsigned short _senderLevel;
 
  public:
-  DiscoveryMessage(const uint8_t & sender, const unsigned short & seqNum,
+  DiscoveryMessage(const unsigned long & sender, const unsigned short & seqNum,
 		 const unsigned short & senderLevel);
 
   DiscoveryMessage(const DiscoveryMessage & other);
