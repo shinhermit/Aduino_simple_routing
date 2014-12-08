@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <CommonValues.h>
 
-HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum)
+HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const time_t & timeStamp)
   :_sender(sender),
   _seqNum(seqNum),
+  _timeStamp(timeStamp),
   previous(NULL),
   next(NULL)
 {}
@@ -12,44 +13,48 @@ HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & 
 HistoryEntry::HistoryEntry(const HistoryEntry & other)
   :_sender(other._sender),
   _seqNum(other._seqNum),
+  _timeStamp(other._timeStamp),
   previous(other.previous),
   next(other.next)
 {}
 
-void HistoryEntry::update(const unsigned short & seqNum)
+void HistoryEntry::update(const unsigned short & seqNum,
+			  const time_t & timeStamp)
 {
-  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
+  HistoryEntry other(_sender, seqNum, timeStamp);
 
-  if(seqNum > _seqNum
-      || (seqNum == 0 && _seqNum == maxSeq))
+  if(other > *this)
   {
     _seqNum = seqNum;
+    _timeStamp = timeStamp;
   }
 }
 
 bool HistoryEntry::operator==(const HistoryEntry & other)const
 {
-  return (_sender == other._sender && _seqNum == other._seqNum);
+  return (_sender == other._sender
+	  && _seqNum == other._seqNum
+	  && _timeStamp == other._timeStamp);
 }
 
 bool HistoryEntry::operator >(const HistoryEntry & other)const
 {
-  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
+  double delay = difftime(other._timeStamp, _timeStamp);
 
-  return (_sender == other._sender &&
-           ( _seqNum > other._seqNum || (_seqNum == 0 && other._seqNum == maxSeq) ));
-}
-
-bool HistoryEntry::operator >(const unsigned short & seqNum)const
-{
-  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
-
-  return ( _seqNum > seqNum || (_seqNum == 0 && seqNum == maxSeq) );
+  return (_sender == other._sender
+	  && other._seqNum <= _seqNum
+	  && delay < CommonValues::Routing::DELAY_LIMIT);
 }
 
 bool HistoryEntry::operator <(const HistoryEntry & other)const
 {
-  return !operator==(other) && !operator>(other);
+  double delay = difftime(other._timeStamp, _timeStamp);
+
+  boolean greaterSeq = (other._seqNum > _seqNum);
+  boolean hasBeenResetted = (other._seqNum <= _seqNum
+			     && delay > CommonValues::Routing::DELAY_LIMIT);
+
+  return (greaterSeq || hasBeenResetted);
 }
 
 unsigned long HistoryEntry::sender()const
@@ -62,3 +67,7 @@ unsigned short HistoryEntry::sequenceNumber()const
   return _seqNum;
 }
 
+time_t timeStamp()const
+{
+  return _timeStamp;
+}
