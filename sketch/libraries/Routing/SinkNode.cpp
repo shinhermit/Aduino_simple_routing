@@ -118,7 +118,12 @@ bool SinkNode::processNextMessage()
 
 void SinkNode::processMessages()
 {
-  while(processNextMessage());
+  bool wasAvailable = false;
+  do
+  {
+    wasAvailable = processNextMessage();
+  }
+  while(wasAvailable);
 }
 
 void SinkNode::broadcastMessage(const DiscoveryMessage & mess)
