@@ -138,6 +138,7 @@ bool SourceNode::processMessage() {
 		{
 			if(isNew(*mess))
 			{
+				//new alert detected
 				Serial.print("\n\n\nReceived alert from ");
 				Serial.print(mess->getSender());
 				Serial.println(".");
@@ -148,23 +149,28 @@ bool SourceNode::processMessage() {
 				Serial.print("\n\n");
 
 				_history.add(mess->getSender(), mess->getSequenceNumber());
-				//Since this is a new alert, broadcast without modification
-				Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
-				AlertMessage message(
-					mess->getSender(),
-					mess->getSequenceNumber(),
-					alert
-				);
 
-				if (_broadcast)
+				if (_level > 0 && mess->getSenderLevel() > _level) 
 				{
-					broadcastMessage(message);
-				}
-				else
-				{
-					unicastMessageToSink(message);
-				}
+					//TODO Check test
+					//our level is set since != 0
+					//Message originates from sender with higher level	
+					Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
+					AlertMessage message(
+						mess->getSender(),
+						mess->getSequenceNumber(),
+						alert
+					);
 
+					if (_broadcast)
+					{
+						broadcastMessage(message);
+					}
+					else
+					{
+						unicastMessageToSink(message);
+					}
+				}
 			}
 			else
 			{
@@ -237,7 +243,7 @@ void SourceNode::unicastMessageToSink(const Message & mess)
 	Serial.println("About to send unicast message to gateway");
 
 	XBeeAddress64 addr = XBeeAddress64(
-		CommonValues::Message::BROADCAST_PREFIX,
+		CommonValues::Message::MAC_PREFIX,
 		_gatewayToSink
 	);
 
