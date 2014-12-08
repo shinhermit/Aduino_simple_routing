@@ -3,9 +3,9 @@
 
 const unsigned short CommonValues::Alert::DEFAULT_ALERT_TYPE = 1;
 
-const uint8_t CommonValues::Message::MAC_PREFIX = 0x0013A200;
+const unsigned long CommonValues::Message::MAC_PREFIX = 0x0013A200;
 
-const uint8_t CommonValues::Message::SINK_SUFFIX = 0x40762066;
+const unsigned long CommonValues::Message::SINK_SUFFIX = 0x40762066;
 
 const unsigned long CommonValues::Message::BROADCAST_PREFIX = 0x00000000;
 

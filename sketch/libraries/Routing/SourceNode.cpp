@@ -55,7 +55,7 @@ void SourceNode::setAddress(const unsigned long & myAddress)
 String SourceNode::receiveMessage()
 {
 	char* data;
-	uint8_t data_len;
+	unsigned long data_len;
 
 	if (_xbee.getResponse().getApiId() == TX_STATUS_RESPONSE)
 	{
