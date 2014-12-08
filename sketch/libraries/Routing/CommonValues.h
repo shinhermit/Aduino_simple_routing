@@ -30,9 +30,9 @@ namespace CommonValues
   {
     public:
       /// The prefix of the MAC addresses.
-      static const uint8_t MAC_PREFIX;
+      static const unsigned long MAC_PREFIX;
       /// The suffix of the MAC address if the sink node.
-      static const uint8_t SINK_SUFFIX;
+      static const unsigned long SINK_SUFFIX;
       /// The prefix of the MAC broadcast address.
       static const unsigned long BROADCAST_PREFIX;
       /// The suffix of the MAC broadcast address.

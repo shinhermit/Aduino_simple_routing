@@ -23,18 +23,18 @@ class MessageHistory
     ///   <li>if the sequence number shows a newer message, the old entry is updated;</li>
     ///   <li>otherwise, the addition is ignored.</li>
     /// </ul>
-    bool add(const uint8_t & sender, const unsigned short & seqNum);
+    bool add(const unsigned long & sender, const unsigned short & seqNum);
     
     /// Deletes an entry from the history.
-    void remove(uint8_t sender);
+    void remove(unsigned long sender);
     
     /// Tells whether the history contains an entry for
     /// the given source with the given sequence number or not.
-    bool contains(uint8_t sender, unsigned short seqNum)const;
+    bool contains(unsigned long sender, unsigned short seqNum)const;
     
     /// Retrives the history entry of the sender.
     /// null is return if no entry found.
-    HistoryEntry * findEntry(uint8_t sender)const;
+    HistoryEntry * findEntry(unsigned long sender)const;
     
   private:
     /// The first history entry of the linked-list history entries.

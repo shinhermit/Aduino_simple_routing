@@ -9,7 +9,7 @@
 class HistoryEntry
 {
   private:
-    uint8_t _sender; /*!< The suffix of the address of the source. */
+    unsigned long _sender; /*!< The suffix of the address of the source. */
     
     unsigned short _seqNum; /*!< The sequence number of the message. */
     
@@ -20,7 +20,7 @@ class HistoryEntry
     HistoryEntry * next;
     
     /// Constructor.
-    HistoryEntry(const uint8_t & sender, const unsigned short & seqNum);
+    HistoryEntry(const unsigned long & sender, const unsigned short & seqNum);
     
     /// Constructor.
     HistoryEntry(const HistoryEntry & other);
@@ -45,7 +45,7 @@ class HistoryEntry
     /// true if entries have same sender and left entry has smaller sequence number that right entry.
     bool operator <(const HistoryEntry & other)const;
     
-    uint8_t sender()const;
+    unsigned long sender()const;
     unsigned short sequenceNumber()const;
 };
 

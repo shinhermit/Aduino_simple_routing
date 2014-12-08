@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <CommonValues.h>
 
-HistoryEntry::HistoryEntry(const uint8_t & sender, const unsigned short & seqNum)
+HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum)
   :_sender(sender),
   _seqNum(seqNum),
   previous(NULL),
@@ -52,7 +52,7 @@ bool HistoryEntry::operator <(const HistoryEntry & other)const
   return !operator==(other) && !operator>(other);
 }
 
-uint8_t HistoryEntry::sender()const
+unsigned long HistoryEntry::sender()const
 {
   return _sender;
 }

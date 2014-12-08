@@ -22,7 +22,7 @@ MessageHistory::~MessageHistory()
 }
 
 /// Returns true if a message is recorded in history
-bool MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
+bool MessageHistory::add(const unsigned long & sender, const unsigned short & seqNum)
 {
   HistoryEntry * entry;
   bool newValue = true;
@@ -56,7 +56,7 @@ bool MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
   return newValue;
 }
 
-void MessageHistory::remove(uint8_t sender)
+void MessageHistory::remove(unsigned long sender)
 {
   HistoryEntry * entry = findEntry(sender);
   
@@ -72,7 +72,7 @@ void MessageHistory::remove(uint8_t sender)
   }
 }
 
-bool MessageHistory::contains(uint8_t sender, unsigned short seqNum)const
+bool MessageHistory::contains(unsigned long sender, unsigned short seqNum)const
 {
   HistoryEntry * entry = findEntry(sender);
   
@@ -86,7 +86,7 @@ bool MessageHistory::contains(uint8_t sender, unsigned short seqNum)const
   }
 }
 
-HistoryEntry * MessageHistory::findEntry(uint8_t sender)const
+HistoryEntry * MessageHistory::findEntry(unsigned long sender)const
 {
   HistoryEntry * entry = _first;
   bool found = false;
