@@ -1,7 +1,7 @@
 #ifndef HISTORY_ENTRY_H
 #define HISTORY_ENTRY_H
 
-#include <time.h>
+#include <Arduino.h>
 #include <stdint.h>
 
 /**
@@ -26,7 +26,7 @@ class HistoryEntry
     /// \param sender the suffix of the address of the sender of the message associated with this history entry.
     /// \param seqNum the sequence number of the message associated with this history entry.
     /// \param timeStamp the time at which the message associated with this history entry arrived.
-    HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const time_t & timeStamp);
+    HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const unsigned long & timeStamp);
     
     /// Constructor.
     HistoryEntry(const HistoryEntry & other);
@@ -44,7 +44,7 @@ class HistoryEntry
     /// </ul>
     /// \param seqNum the sequence number of the message associated with this history entry.
     /// \param timeStamp the time at which the message associated with this history entry arrived.
-    void update(const unsigned short & seqNum, const time_t & timeStamp);
+    void update(const unsigned short & seqNum, const unsigned long & timeStamp);
     
     /// operator ==
     /// Means that the other history entry represents the same message (thus a duplicate) than the message represented by this history entry.
@@ -71,7 +71,7 @@ class HistoryEntry
 
     /// Provides the time at which the message associated with tis history entry arrived.
     /// \return the time at which the message associated with tis history entry arrived.
-    time_t timeStamp()const;
+    unsigned long timeStamp()const;
 };
 
 #endif

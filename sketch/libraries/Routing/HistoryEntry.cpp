@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <CommonValues.h>
 
-HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const time_t & timeStamp)
+HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const unsigned long & timeStamp)
   :_sender(sender),
   _seqNum(seqNum),
   _timeStamp(timeStamp),
@@ -19,7 +19,7 @@ HistoryEntry::HistoryEntry(const HistoryEntry & other)
 {}
 
 void HistoryEntry::update(const unsigned short & seqNum,
-			  const time_t & timeStamp)
+			  const unsigned long & timeStamp)
 {
   HistoryEntry other(_sender, seqNum, timeStamp);
 
@@ -39,7 +39,7 @@ bool HistoryEntry::operator==(const HistoryEntry & other)const
 
 bool HistoryEntry::operator >(const HistoryEntry & other)const
 {
-  double delay = difftime(other._timeStamp, _timeStamp);
+  unsigned long delay = other._timeStamp - _timeStamp;
 
   return (_sender == other._sender
 	  && other._seqNum <= _seqNum
@@ -48,7 +48,7 @@ bool HistoryEntry::operator >(const HistoryEntry & other)const
 
 bool HistoryEntry::operator <(const HistoryEntry & other)const
 {
-  double delay = difftime(other._timeStamp, _timeStamp);
+  unsigned long delay = other._timeStamp - _timeStamp;
 
   boolean greaterSeq = (other._seqNum > _seqNum);
   boolean hasBeenResetted = (other._seqNum <= _seqNum
@@ -67,7 +67,7 @@ unsigned short HistoryEntry::sequenceNumber()const
   return _seqNum;
 }
 
-time_t timeStamp()const
+unsigned long HistoryEntry::timeStamp()const
 {
   return _timeStamp;
 }

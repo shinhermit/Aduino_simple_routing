@@ -23,9 +23,9 @@ MessageHistory::~MessageHistory()
 
 bool MessageHistory::add(const unsigned long & sender,
 			 const unsigned short & seqNum,
-			 const time_t & timeStamp)
+			 const unsigned long & timeStamp)
 {
-  HistoryEntry * currentEntry, incoming;
+  HistoryEntry *currentEntry, *incoming;
   bool newValue = true;
 
   incoming = new HistoryEntry(sender, seqNum, timeStamp);
@@ -66,7 +66,7 @@ bool MessageHistory::add(const unsigned long & sender,
 bool MessageHistory::add(const unsigned long & sender,
 			 const unsigned short & seqNum)
 {
-  add(sender, seqNum, time(NULL));
+  add(sender, seqNum, millis());
 }
 
 void MessageHistory::remove(const unsigned long & sender)

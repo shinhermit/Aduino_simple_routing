@@ -41,8 +41,6 @@ class SourceNode
     SourceNode();
     
     String receiveMessage();
-    
-    bool isNew(const Message & mess)const;
 	void sendMessage(XBeeAddress64 & addr, const Message & mess);
 	void broadcastMessage(const Message & mess);
 	void unicastMessageToSink(const Message & mess);

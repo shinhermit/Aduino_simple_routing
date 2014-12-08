@@ -78,20 +78,6 @@ String SourceNode::receiveMessage()
 	return String(data);
 }
 
-bool SourceNode::isNew(const Message & mess)const
-{
-	HistoryEntry * old = _history.findEntry(mess.getSender());
-
-	if(old == NULL)
-	{
-		return true;
-	}
-	else
-	{
-		return (*old) < HistoryEntry(mess.getSender(), mess.getSequenceNumber());
-	}
-}
-
 void SourceNode::sendSensorValue () 
 {
 	unsigned short alertType = CommonValues::Alert::DEFAULT_ALERT_TYPE; 
@@ -118,8 +104,9 @@ unsigned short SourceNode::getSequenceNumber()
 bool SourceNode::processMessage() {
 	String strMess;
 	Message * mess;
-
+	bool isNew;
 	bool messageProcessed = false;
+	unsigned long timeStamp;
 
 	Serial.println("\nChecking for messages.");
 
@@ -127,6 +114,8 @@ bool SourceNode::processMessage() {
 
 	if (_xbee.getResponse().isAvailable())
 	{
+	  timeStamp = millis();
+
 		messageProcessed = true;
 		Serial.println("Message available.");
 
@@ -136,7 +125,9 @@ bool SourceNode::processMessage() {
 
 		if(mess->getMessageType() == Message::ALERT)
 		{
-			if(isNew(*mess))
+
+		  isNew = _history.add(mess->getSender(), mess->getSequenceNumber(), timeStamp);
+			if(isNew)
 			{
 				//new alert detected
 				Serial.print("\n\n\nReceived alert from ");
@@ -147,8 +138,6 @@ bool SourceNode::processMessage() {
 				Serial.print(", valeur: ");
 				Serial.println(mess->getAlert().getSensorValue());
 				Serial.print("\n\n");
-
-				_history.add(mess->getSender(), mess->getSequenceNumber());
 
 				if (_level > 0 && mess->getSenderLevel() > _level) 
 				{

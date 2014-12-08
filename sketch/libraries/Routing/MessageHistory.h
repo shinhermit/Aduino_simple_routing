@@ -30,7 +30,7 @@ class MessageHistory
     /// \return true if an entry is actually added to the history, false if it has been ignored.
     bool add(const unsigned long & sender,
 	     const unsigned short & seqNum,
-	     const time_t & timeStamp);
+	     const unsigned long & timeStamp);
     
     /// Adds an entry to the history.
     /// <p>If no entry related to the sender exists, the entry is added.<br/>

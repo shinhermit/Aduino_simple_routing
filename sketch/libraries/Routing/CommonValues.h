@@ -71,7 +71,7 @@ namespace CommonValues
       /// The time the source nodes wait before sending messages.
       static const unsigned short SOURCE_DELAY;
       /// The maximum delay (in seconds) between 2 messages after which we consider that the new messsage can not be a duplication of the first one (it is thus considered that a lot of messages where lost).
-      static const double DELAY_LIMIT;
+      static const unsigned long DELAY_LIMIT;
   };
 }
 

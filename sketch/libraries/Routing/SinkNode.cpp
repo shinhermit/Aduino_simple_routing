@@ -62,24 +62,12 @@ String SinkNode::receiveMessage()
   return String(data);
 }
 
-bool SinkNode::isNew(const Message & mess)const
-{
-  HistoryEntry * old = _history.findEntry(mess.getSender());
-  
-  if(old == NULL)
-  {
-    return true;
-  }
-  else
-  {
-    return (*old) < HistoryEntry(mess.getSender(), mess.getSequenceNumber());
-  }
-}
-
-void SinkNode::processMessages()
+bool SinkNode::processNextMessage()
 {
   String strMess;
   Message * mess;
+  bool isNew, wasAvailable = false;
+  unsigned long timeStamp;
 
   Serial.println("\nChecking message buffer.");
 
@@ -87,6 +75,9 @@ void SinkNode::processMessages()
 
   if (_xbee.getResponse().isAvailable())
   {
+    timeStamp = millis();
+    wasAvailable = true;
+
     Serial.println("Message available.");
 
     strMess = receiveMessage();
@@ -95,7 +86,10 @@ void SinkNode::processMessages()
     
     if(mess->getMessageType() == Message::ALERT)
     {
-      if(isNew(*mess))
+	isNew = _history.add(mess->getSender(),
+			     mess->getSequenceNumber(),
+			     timeStamp);
+      if(isNew)
       {
 	Serial.print("\n\n\nReceived alert from ");
 	Serial.print(mess->getSender());
@@ -105,8 +99,6 @@ void SinkNode::processMessages()
 	Serial.print(", valeur: ");
 	Serial.println(mess->getAlert().getSensorValue());
 	Serial.print("\n\n");
-      
-	_history.add(mess->getSender(), mess->getSequenceNumber());
       }
       else
       {
@@ -120,6 +112,13 @@ void SinkNode::processMessages()
     
     delete mess;
   }
+
+  return wasAvailable;
+}
+
+void SinkNode::processMessages()
+{
+  while(processNextMessage());
 }
 
 void SinkNode::broadcastMessage(const DiscoveryMessage & mess)
