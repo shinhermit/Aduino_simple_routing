@@ -7,9 +7,9 @@ const uint8_t CommonValues::Message::MAC_PREFIX = 0x0013A200;
 
 const uint8_t CommonValues::Message::SINK_SUFFIX = 0x40762066;
 
-const uint8_t CommonValues::Message::BROADCAST_PREFIX = 0x00000000;
+const unsigned long CommonValues::Message::BROADCAST_PREFIX = 0x00000000;
 
-const uint8_t CommonValues::Message::BROADCAST_SUFFIX = 0x0000FFFF;
+const unsigned long CommonValues::Message::BROADCAST_SUFFIX = 0x0000FFFF;
 
 const unsigned short CommonValues::Message::SEQUENCE_NUMBER_MOD = 256;
 

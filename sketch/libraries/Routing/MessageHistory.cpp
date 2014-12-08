@@ -21,6 +21,7 @@ MessageHistory::~MessageHistory()
   }
 }
 
+/// Returns true if a message is recorded in history
 bool MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
 {
   HistoryEntry * entry;

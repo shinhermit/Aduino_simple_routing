@@ -30,8 +30,8 @@ namespace CommonValues
 
       static const uint8_t MAC_PREFIX;
       static const uint8_t SINK_SUFFIX;
-      static const uint8_t BROADCAST_PREFIX;
-      static const uint8_t BROADCAST_SUFFIX;
+      static const unsigned long BROADCAST_PREFIX;
+      static const unsigned long BROADCAST_SUFFIX;
       static const unsigned short SEQUENCE_NUMBER_MOD;
     
     class Serialization

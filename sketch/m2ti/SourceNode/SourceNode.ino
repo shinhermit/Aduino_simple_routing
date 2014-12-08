@@ -3,26 +3,31 @@
 #include <HumiditySensor.h>
 #include <SourceNode.h>
 #include <CommonValues.h>
-const uint8_t myAddress = 0x12345678;
-int pinNumber = 8;
 
-HumiditySensor humiditySensor(pinNumber);
+const unsigned long myAddress = 0x12345678;
 
-SourceNode sourceNode(myAddress, humiditySensor);
+//int pinNumber = 8;
 
-Alert alert(CommonValues::Alert::DEFAULT_ALERT_TYPE);
+//HumiditySensor humiditySensor(pinNumber);
 
-float sensorValue = 0.;
+//SourceNode sourceNode(myAddress, humiditySensor);
+
+//SourceNode sourceNode(myAddress);
+
+//SourceNode sourceNode();
+
+SourceNode sourceNode = SourceNode::getInstance();
 
 void setup()
 {
+  sourceNode.setAddress(myAddress);
   Serial.begin(CommonValues::Routing::XBEE_RATE);
 }
 
 void loop()
-{
+{  
   sourceNode.processMessages();
-  
+  sourceNode.sendSensorValue();
   //sensorValue = sourceNode.readSensor();
   
   //alert.setSensorValue(sensorValue);

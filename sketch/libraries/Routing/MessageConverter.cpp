@@ -85,18 +85,24 @@ Message * MessageConverter::parse(const String & mess)
   switch(messageType)
   {
   case Message::ALERT:
+	//TODO : remove
+	Serial.println("Alert parsed");
       alert.setAlertType((unsigned short)tokens[4].toInt());
       alert.setSensorValue(tokens[5].toFloat());
       
       message = new AlertMessage(sender, seqNum, alert);
       break;
     case Message::DISCOVERY:
+	//TODO : remove
+	Serial.println("Discovery parsed");
       senderLevel = (unsigned short)tokens[2].toInt();
       
       message = new DiscoveryMessage(sender, seqNum, senderLevel);
       break;
   }
-  
+ 
+	//TODO : remove
+	Serial.println("Parsing done");
   return message;
 }
 
