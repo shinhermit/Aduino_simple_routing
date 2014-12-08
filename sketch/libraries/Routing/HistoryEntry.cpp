@@ -18,10 +18,7 @@ HistoryEntry::HistoryEntry(const HistoryEntry & other)
 
 void HistoryEntry::update(const unsigned short & seqNum)
 {
-  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
-
-  if(seqNum > _seqNum
-      || (seqNum == 0 && _seqNum == maxSeq))
+  if( this->operator<(HistoryEntry(_sender, seqNum)) )
   {
     _seqNum = seqNum;
   }
@@ -38,13 +35,6 @@ bool HistoryEntry::operator >(const HistoryEntry & other)const
 
   return (_sender == other._sender &&
            ( _seqNum > other._seqNum || (_seqNum == 0 && other._seqNum == maxSeq) ));
-}
-
-bool HistoryEntry::operator >(const unsigned short & seqNum)const
-{
-  const unsigned short maxSeq = CommonValues::Message::SEQUENCE_NUMBER_MOD - 1;
-
-  return ( _seqNum > seqNum || (_seqNum == 0 && seqNum == maxSeq) );
 }
 
 bool HistoryEntry::operator <(const HistoryEntry & other)const
