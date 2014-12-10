@@ -101,7 +101,8 @@ unsigned short SourceNode::getSequenceNumber()
 }
 
 /// Attempts to read message, returns true if successful, false otherwise
-bool SourceNode::processMessage() {
+bool SourceNode::processMessage() 
+{
 	String strMess;
 	Message * mess;
 	bool isNew;
@@ -114,7 +115,7 @@ bool SourceNode::processMessage() {
 
 	if (_xbee.getResponse().isAvailable())
 	{
-	  timeStamp = millis();
+		timeStamp = millis();
 
 		messageProcessed = true;
 		Serial.println("Message available.");
@@ -123,12 +124,12 @@ bool SourceNode::processMessage() {
 
 		mess = MessageConverter::parse(strMess);
 
-		if(mess->getMessageType() == Message::ALERT)
-		{
+		isNew = _history.add(mess->getSender(), mess->getSequenceNumber(), timeStamp);
 
-		  isNew = _history.add(mess->getSender(), mess->getSequenceNumber(), timeStamp);
-			if(isNew)
-			{
+		if(isNew)
+		{
+			if(mess->getMessageType() == Message::ALERT)
+			{	
 				//new alert detected
 				Serial.print("\n\n\nReceived alert from ");
 				Serial.print(mess->getSender());
@@ -160,46 +161,53 @@ bool SourceNode::processMessage() {
 						unicastMessageToSink(message);
 					}
 				}
+				else 
+				{
+					//TODO
+					//_level not set yet, no discovery received
+					//store message for the moment
+					//Just drop it!
+				}
 			}
 			else
 			{
-				Serial.println(String("Message ")+strMess+String(" found in history."));
+				//Discovery message
+				if (_level == 0 || _lastDiscoverySequenceNumber != mess->getSequenceNumber())
+				{
+					//set level, record sequence number, gateway to sink then broadcast
+					//if first discovery or new sequence number
+					_level = mess->getSenderLevel() + 1;
+					_lastDiscoverySequenceNumber = mess->getSequenceNumber();
+					_gatewayToSink = mess->getSender();
+					DiscoveryMessage message(
+							_myAddress,
+							_lastDiscoverySequenceNumber,
+							_level
+							);
+
+					if (_broadcast)
+					{
+						broadcastMessage(message);
+					}
+					else
+					{
+						unicastMessageToSink(message);
+					}
+				}
+
+
+				/*Serial.print("\n\n\nReceived discovery from ");
+				  Serial.print(mess->getSender());
+				  Serial.println(".");
+				  Serial.println("Sender level : "+String(mess->getSenderLevel()));
+				  Serial.println("My level : "+String(_level));
+				  Serial.println("Sequence number : "+String(mess->getSequenceNumber()));
+				  Serial.print("\n\n");*/
 			}
 		}
 		else
 		{
-			//Discovery message
-			if (_level == 0 || _lastDiscoverySequenceNumber != mess->getSequenceNumber())
-			{
-				//set level, record sequence number, gateway to sink then broadcast
-				//if first discovery or new sequence number
-				_level = mess->getSenderLevel() + 1;
-				_lastDiscoverySequenceNumber = mess->getSequenceNumber();
-				_gatewayToSink = mess->getSender();
-				DiscoveryMessage message(
-					_myAddress,
-					_lastDiscoverySequenceNumber,
-					_level
-				);
-
-				if (_broadcast)
-				{
-					broadcastMessage(message);
-				}
-				else
-				{
-					unicastMessageToSink(message);
-				}
-			}
-
-
-			/*Serial.print("\n\n\nReceived discovery from ");
-			Serial.print(mess->getSender());
-			Serial.println(".");
-			Serial.println("Sender level : "+String(mess->getSenderLevel()));
-			Serial.println("My level : "+String(_level));
-			Serial.println("Sequence number : "+String(mess->getSequenceNumber()));
-			Serial.print("\n\n");*/
+			Serial.println(String("Message ")+strMess+String(" found in history."));
 		}
 
 		delete mess;
@@ -211,8 +219,13 @@ bool SourceNode::processMessage() {
 /// Process all available messages.
 void SourceNode::processMessages()
 {
-	while(processMessage())
-		;
+	bool messageProcessed;
+
+	do 
+	{
+		messageProcessed = processMessages();
+	}
+	while(messageProcessed)
 }
 
 void SourceNode::sendMessage(XBeeAddress64 & addr, const Message & mess)
