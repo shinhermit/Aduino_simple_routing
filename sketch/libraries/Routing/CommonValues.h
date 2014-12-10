@@ -70,6 +70,8 @@ namespace CommonValues
       static const unsigned short SINK_DELAY;
       /// The time the source nodes wait before sending messages.
       static const unsigned short SOURCE_DELAY;
+      /// The maximum numbers for peers in the arduino network (estimation).
+      static const unsigned short MAX_PEERS;
       /// The maximum delay (in seconds) between 2 messages after which we consider that the new messsage can not be a duplication of the first one (it is thus considered that a lot of messages where lost).
       static const unsigned long DELAY_LIMIT;
   };
