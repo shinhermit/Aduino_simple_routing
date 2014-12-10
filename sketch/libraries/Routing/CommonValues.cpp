@@ -27,4 +27,7 @@ const unsigned short CommonValues::Routing::SINK_DELAY = 4000;
 
 const unsigned short CommonValues::Routing::SOURCE_DELAY = 5000;
 
-const unsigned long CommonValues::Routing::DELAY_LIMIT = 5000;
+const unsigned short CommonValues::Routing::MAX_PEERS = 10;
+
+const unsigned long CommonValues::Routing::DELAY_LIMIT =
+  CommonValues::Routing::SOURCE_DELAY * CommonValues::Routing::MAX_PEERS;
