@@ -3,6 +3,7 @@
 #include <HumiditySensor.h>
 #include <SourceNode.h>
 #include <CommonValues.h>
+//#include <LiquidCrystal_I2C.h>
 
 const unsigned long myAddress = 0x12345678;
 
@@ -18,22 +19,18 @@ const unsigned long myAddress = 0x12345678;
 
 SourceNode sourceNode = SourceNode::getInstance();
 
+
 void setup()
 {
   sourceNode.setAddress(myAddress);
-  Serial.begin(CommonValues::Routing::XBEE_RATE);
 }
 
 void loop()
 {  
   sourceNode.processMessages();
-  sourceNode.sendSensorValue();
-  //sensorValue = sourceNode.readSensor();
   
-  //alert.setSensorValue(sensorValue);
+  //sourceNode.sendSensorValue();
   
-  //sourceNode.sendAlert(alert);
-  
-  delay(5000);
+  delay(1000);
 }
 
