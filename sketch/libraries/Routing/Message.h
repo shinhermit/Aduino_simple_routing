@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include "Alert.h"
+#include "String.h"
 
 /**
  * Represents a message which can be sent to a node on the arduino
@@ -104,6 +105,11 @@ class Message
    * \param alert  the carried alert.
    */
   virtual void setAlert(const Alert & alert);
+
+  /**
+   * Provides a string represetation of this message.
+   */
+  String toString()const;
   
  private:
   /// the type of this message.
@@ -113,6 +119,13 @@ class Message
   /// the sequence number of this message.
   unsigned short _seqNum;
 
+ protected:
+  /**
+   * Intended for use in toString() method.
+   * <p>Provides a string which is to be appended to the string representation of a message. This additionnal string is particular to the subclass.</p>
+   * \return a string which is particular to the sub-class.
+   */
+  virtual String _getSpecialString()const;
 };
 
 #endif

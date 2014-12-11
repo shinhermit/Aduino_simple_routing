@@ -51,3 +51,10 @@ void Alert::setSensorValue(const float & sensorValue)
   _sensorValue = sensorValue;
 }
 
+String Alert::toString()const
+{
+  return String("Alert {type: ")
+         +_alertType
+         +String(", value: ")
+         +_sensorValue+String("}");
+}

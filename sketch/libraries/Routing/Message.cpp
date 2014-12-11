@@ -1,4 +1,5 @@
 #include "Message.h"
+#include <stdio.h>
 
 const Message::MessageType Message::DEFAULT_TYPE = Message::ALERT;
 
@@ -85,3 +86,21 @@ void Message::setAlert(const Alert & alert)
 {
 }
 
+String Message::toString()const
+{
+  char sender[9];
+  sprintf(sender, "%08lX", _sender);
+
+  return
+    String("Message\n{")
+    + String("\tType: ") + String(_messageType == 0 ? "ALERT,\n" : "DISCOVERY,\n")
+    + String("\tSender: ") + String(sender) + String("\n")
+    + String("\tSequence number: ") + _seqNum + String("\n")
+    + _getSpecialString()
+    +String("\n}");
+}
+
+String Message::_getSpecialString()const
+{
+  return String("");
+}
