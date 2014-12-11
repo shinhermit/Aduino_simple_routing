@@ -16,6 +16,12 @@ class AlertMessage : public Message
    */
   Alert _alert;
 
+ protected:
+  /**
+   * \overload
+   */
+  virtual String _getSpecialString()const;
+
  public:
   /**
    * Creates a Message which carries the provided Alert.

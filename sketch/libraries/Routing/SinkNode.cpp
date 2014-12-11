@@ -69,7 +69,7 @@ bool SinkNode::processNextMessage()
   bool isNew, wasAvailable = false;
   unsigned long timeStamp;
 
-  Serial.println("\nChecking message buffer.");
+  //Serial.println("\nChecking message buffer.");
 
   _xbee.readPacket();
 
@@ -78,7 +78,7 @@ bool SinkNode::processNextMessage()
     timeStamp = millis();
     wasAvailable = true;
 
-    Serial.println("Message available.");
+    //Serial.println("Message available.");
 
     strMess = receiveMessage();
     
@@ -91,14 +91,7 @@ bool SinkNode::processNextMessage()
 			     timeStamp);
       if(isNew)
       {
-	Serial.print("\n\n\nReceived alert from ");
-	Serial.print(mess->getSender());
-	Serial.println(".");
-	Serial.print("\tType alerte: ");
-	Serial.print(mess->getAlert().getAlertType());
-	Serial.print(", valeur: ");
-	Serial.println(mess->getAlert().getSensorValue());
-	Serial.print("\n\n");
+	Serial.println(mess->toString());
       }
       else
       {

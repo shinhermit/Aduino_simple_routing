@@ -1,6 +1,8 @@
 #ifndef ALERT_H
 #define ALERT_H
 
+#include "String.h"
+
 /**
  * Represents an alert which is is to be sent to the sink node.
  * <p>An alert encapsulates the type of sensor which issues a value, and
@@ -70,6 +72,12 @@ class Alert
    * \param sensorValue the value of this alert.
    */
   void setSensorValue(const float & sensorValue);
+
+  /**
+   * Provides a string representation of this alert.
+   * \return  a string representation of this alert.
+   */
+  String toString()const;
 };
 
 #endif

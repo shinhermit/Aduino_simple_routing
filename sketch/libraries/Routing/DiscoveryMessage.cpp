@@ -30,3 +30,7 @@ void DiscoveryMessage::setSenderLevel(const unsigned short & senderLevel)
   _senderLevel = senderLevel;
 }
 
+String DiscoveryMessage::_getSpecialString()const
+{
+  return String("\tSender level: ")+_senderLevel+String("\n");
+}

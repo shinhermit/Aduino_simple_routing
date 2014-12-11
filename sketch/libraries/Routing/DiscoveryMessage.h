@@ -16,6 +16,12 @@ class DiscoveryMessage : public Message
    */
   unsigned short _senderLevel;
 
+ protected:
+  /**
+   * \overload
+   */
+  virtual String _getSpecialString()const;
+
  public:
   /**
    * Creates a Message which carries path discovery information.
