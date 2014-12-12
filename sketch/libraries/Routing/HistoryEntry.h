@@ -16,6 +16,10 @@ class HistoryEntry
     unsigned short _seqNum; /*!< The sequence number of the message. */
 
     unsigned long _timeStamp; /*!< The time at which the message arrived (distinguish sequence number duplication from sequence number reset). */
+
+    bool _equals(const HistoryEntry & other)const;
+    bool _olderThan(const HistoryEntry & other)const;
+    bool _newerThan(const HistoryEntry & other)const;
     
   public:
     /// The previous entry in the linked list
