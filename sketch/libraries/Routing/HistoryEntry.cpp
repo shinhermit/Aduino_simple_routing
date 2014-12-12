@@ -21,13 +21,8 @@ HistoryEntry::HistoryEntry(const HistoryEntry & other)
 void HistoryEntry::update(const unsigned short & seqNum,
 			  const unsigned long & timeStamp)
 {
-  HistoryEntry other(_sender, seqNum, timeStamp);
-
-  if(other > *this)
-  {
     _seqNum = seqNum;
     _timeStamp = timeStamp;
-  }
 }
 
 bool HistoryEntry::operator==(const HistoryEntry & other)const

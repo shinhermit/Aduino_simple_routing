@@ -32,19 +32,8 @@ class HistoryEntry
     /// Constructor.
     HistoryEntry(const HistoryEntry & other);
     
-    /// Update the entry to the lastest sequence number.<br/>
-    /// <p>If the new information doest not represent a newer message, the update is ignored.</p>
-    /// <p>A message is newer when it is not a dupplicated message.</p>
-    /// <p>Duplicated messages are detected by the following rule:
-    /// <code><pre>seqNum+ <= seqNum- AND timeStamp+ < maxDelay</pre></code>
-    /// Where:
-    /// <ul>
-    /// <li>seqNum+ and timeStamp+ are the sequence number and timeStampe associated with the new message.</li>
-    /// <li> seqNum- and timeStamp- are the sequence number and timeStampe associated with the currently known one.</li>
-    /// <li>maxDelay is a parameter of the routing protocol which specifies the maximum time of retransmission of a message throrough the network.</li>
-    /// </ul>
-    /// \param seqNum the sequence number of the message associated with this history entry.
-    /// \param timeStamp the time at which the message associated with this history entry arrived.
+    /// Updates the entry to the lastest sequence number.<br/>
+    /// One should verify that the new information represents a newer message than the one represented by the current entry.
     void update(const unsigned short & seqNum, const unsigned long & timeStamp);
     
     /// operator ==

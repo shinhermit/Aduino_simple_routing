@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "MessageHistory.h"
 
+#include <SoftwareSerial.h>
+
 MessageHistory::MessageHistory()
   :_first(NULL),
   _last(NULL)
@@ -34,6 +36,8 @@ bool MessageHistory::add(const unsigned long & sender,
   {
     _first = incoming;
     _last = _first;
+
+    Serial.println("History is empty => new message !");
   }
   else
   {
@@ -44,10 +48,13 @@ bool MessageHistory::add(const unsigned long & sender,
       if((*incoming) > (*currentEntry))
       {
         currentEntry->update(seqNum, timeStamp);
+
+	Serial.println("incoming entry found greater => new message !");
       }
       else
       {
         newValue = false;
+	Serial.println("incoming entry not found greater => old message !");
       }
 
       delete incoming;
@@ -57,6 +64,8 @@ bool MessageHistory::add(const unsigned long & sender,
       _last->next = incoming;
       _last->next->previous = _last;
       _last = _last->next;
+
+	Serial.println("No current entry found => new message !");
     }
   }
 
