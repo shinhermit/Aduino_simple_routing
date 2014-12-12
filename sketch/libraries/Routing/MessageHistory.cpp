@@ -37,7 +37,7 @@ bool MessageHistory::add(const unsigned long & sender,
     _first = incoming;
     _last = _first;
 
-    Serial.println("History is empty => new message !");
+    //Serial.println("History is empty => new message !");
   }
   else
   {
@@ -49,12 +49,12 @@ bool MessageHistory::add(const unsigned long & sender,
       {
         currentEntry->update(seqNum, timeStamp);
 
-	Serial.println("incoming entry found greater => new message !");
+	//Serial.println("incoming entry found greater => new message !");
       }
       else
       {
         newValue = false;
-	Serial.println("incoming entry not found greater => old message !");
+	//Serial.println("incoming entry not found greater => old message !");
       }
 
       delete incoming;
@@ -65,7 +65,7 @@ bool MessageHistory::add(const unsigned long & sender,
       _last->next->previous = _last;
       _last = _last->next;
 
-	Serial.println("No current entry found => new message !");
+      //Serial.println("No current entry found => new message !");
     }
   }
 
