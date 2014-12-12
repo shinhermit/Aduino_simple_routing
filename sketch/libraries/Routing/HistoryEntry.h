@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <stdint.h>
+#include "String.h"
 
 /**
 * Entries for the message history.
@@ -72,6 +73,9 @@ class HistoryEntry
     /// Provides the time at which the message associated with tis history entry arrived.
     /// \return the time at which the message associated with tis history entry arrived.
     unsigned long timeStamp()const;
+
+    /// \return a pretty printed string representation of this history entry.
+    String toString()const;
 };
 
 #endif

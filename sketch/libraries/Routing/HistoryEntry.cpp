@@ -85,3 +85,16 @@ unsigned long HistoryEntry::timeStamp()const
 {
   return _timeStamp;
 }
+
+String HistoryEntry::toString()const
+{
+  char sender[9];
+  sprintf(sender, "%08lX", _sender);
+
+  return
+    String("HistoryEntry {")
+    + String("sender: ") + String(sender)
+    + String("seqNum: ") + String(_seqNum)
+    + String("timestamp: ") + _timeStamp
+    + String("}");
+}
