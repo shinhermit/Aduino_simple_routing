@@ -65,7 +65,7 @@ bool HistoryEntry::_equals(const HistoryEntry & other)const
     && _timeStamp == other._timeStamp;
 }
 
-bool HistoryEntry::_newerThan(const HistoryEntry & other)
+bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 {
   unsigned long delay = other._timeStamp - _timeStamp;
 
@@ -73,7 +73,7 @@ bool HistoryEntry::_newerThan(const HistoryEntry & other)
   bool afterReset = (_seqNum <= other._seqNum
 		     && delay > CommonValues::Routing::DELAY_LIMIT);
 
-  return smallerSeq || afterReset;
+  return greaterSeq || afterReset;
 }
 
 bool HistoryEntry::_olderThan(const HistoryEntry & other)const
