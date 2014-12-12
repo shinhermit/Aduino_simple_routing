@@ -39,22 +39,36 @@ bool HistoryEntry::operator==(const HistoryEntry & other)const
 
 bool HistoryEntry::operator >(const HistoryEntry & other)const
 {
-  unsigned long delay = other._timeStamp - _timeStamp;
+	unsigned long delay = other._timeStamp - _timeStamp;
+//	Serial.println("other sender "+String(other.sender()));
+//	Serial.println("other seqNum "+String(other.sequenceNumber()));
+//	Serial.println("other timestamp "+String(other.timeStamp()));
+	bool isSameSender = _sender == other._sender;
+	bool isSameSeqNum = other._seqNum == _seqNum;
+	bool isGreaterSeqNum =  _seqNum > other._seqNum;
+	bool hasExpiredDelay = delay > CommonValues::Routing::DELAY_LIMIT;
 
-  return (_sender == other._sender
-	  && other._seqNum <= _seqNum
-	  && delay < CommonValues::Routing::DELAY_LIMIT);
+	return isSameSender && (isGreaterSeqNum || hasExpiredDelay);
 }
+//Returns false in the case
+// e1.sender == e2.sender
+// and
+// delay >= DELAY_LIMIT
+// whatever the seqnum
+// Should consider message new if delay has expired.
+
+
 
 bool HistoryEntry::operator <(const HistoryEntry & other)const
 {
-  unsigned long delay = other._timeStamp - _timeStamp;
+	unsigned long delay = other._timeStamp - _timeStamp;
 
-  boolean greaterSeq = (other._seqNum > _seqNum);
-  boolean hasBeenResetted = (other._seqNum <= _seqNum
-			     && delay > CommonValues::Routing::DELAY_LIMIT);
+	bool isSameSender = _sender == other._sender;
+	bool smallerSeq = (_seqNum < other._seqNum);
+	bool hasBeenResetted = (other._seqNum <= _seqNum
+			&& delay > CommonValues::Routing::DELAY_LIMIT);
 
-  return (greaterSeq || hasBeenResetted);
+	return isSameSender && (smallerSeq || hasBeenResetted);
 }
 
 unsigned long HistoryEntry::sender()const
