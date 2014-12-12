@@ -111,7 +111,7 @@ void setup()
   }
   if(entry12 < entry10)
   {
-    Serial.println(entry12.toString()+" < "+entry10.toString()+": faillllll");
+    Serial.println(entry12.toString()+" < "+entry10.toString()+": fail");
   }
   else
   {

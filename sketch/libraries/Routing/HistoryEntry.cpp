@@ -1,6 +1,7 @@
 #include "HistoryEntry.h"
 #include <stdlib.h>
 #include <CommonValues.h>
+#include <math.h>
 
 HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const unsigned long & timeStamp)
   :_sender(sender),
@@ -61,8 +62,8 @@ unsigned long HistoryEntry::timeStamp()const
 bool HistoryEntry::_equals(const HistoryEntry & other)const
 {
   return 
-    _seqNum == other._seqNum
-    && _timeStamp == other._timeStamp;
+    !_olderThan(other)
+    && !_newerThan(other);
 }
 
 bool HistoryEntry::_newerThan(const HistoryEntry & other)const
@@ -78,7 +79,9 @@ bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 
 bool HistoryEntry::_olderThan(const HistoryEntry & other)const
 {
-  return !_equals(other) && !_newerThan(other);
+  unsigned long delay = abs(other._timeStamp - _timeStamp);
+
+  return _seqNum < other._seqNum && delay <= CommonValues::Routing::DELAY_LIMIT;
 }
 
 String HistoryEntry::toString()const
