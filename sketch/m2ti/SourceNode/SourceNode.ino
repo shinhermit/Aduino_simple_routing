@@ -3,7 +3,9 @@
 #include <HumiditySensor.h>
 #include <SourceNode.h>
 #include <CommonValues.h>
-//#include <LiquidCrystal_I2C.h>
+#include <LcdDisplay.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h> 
 
 const unsigned long myAddress = 0x12345678;
 
@@ -22,6 +24,7 @@ SourceNode sourceNode = SourceNode::getInstance();
 
 void setup()
 {
+  Serial.begin(38400);
   sourceNode.setAddress(myAddress);
 }
 

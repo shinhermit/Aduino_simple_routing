@@ -2,6 +2,8 @@
 #include "CommonValues.h"
 #include "MessageConverter.h"
 #include "AlertMessage.h"
+//#include "LcdDisplay.h"
+
 
 #include <SoftwareSerial.h>
 
@@ -111,12 +113,12 @@ bool SourceNode::processMessage()
 
 	Serial.println("\nChecking for messages.");
 
+		//LcdDisplay::getInstance().display("test");
 	_xbee.readPacket();
 
 	if (_xbee.getResponse().isAvailable())
 	{
 		timeStamp = millis();
-
 		messageProcessed = true;
 		Serial.println("Message available.");
 
