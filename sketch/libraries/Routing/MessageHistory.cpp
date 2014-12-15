@@ -45,7 +45,7 @@ bool MessageHistory::add(const unsigned long & sender,
     
     if(currentEntry != NULL)
     {
-      if((*incoming) > (*currentEntry))
+      if(incoming->isNewerThan(*currentEntry))
       {
         currentEntry->update(seqNum, timeStamp);
 

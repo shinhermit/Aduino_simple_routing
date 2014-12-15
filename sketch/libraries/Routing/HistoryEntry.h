@@ -17,7 +17,7 @@ class HistoryEntry
 
     unsigned long _timeStamp; /*!< The time at which the message arrived (distinguish sequence number duplication from sequence number reset). */
 
-    bool _equals(const HistoryEntry & other)const;
+    bool _duplicates(const HistoryEntry & other)const;
     bool _olderThan(const HistoryEntry & other)const;
     bool _newerThan(const HistoryEntry & other)const;
     
@@ -43,17 +43,17 @@ class HistoryEntry
     /// operator ==
     /// Means that the other history entry represents the same message (thus a duplicate) than the message represented by this history entry.
     /// \return true if the other entry represents a duplicated message from the message associated with this entry.
-    bool operator==(const HistoryEntry & other)const;
+    bool isDuplicateOf(const HistoryEntry & other)const;
     
     /// operator >
     /// Means that the other history entry represents an older message (thus a duplicate) than the message represented by this history entry.
     /// \return true if the other entry represents an older message from the sender of the message associated with this history entry.
-    bool operator >(const HistoryEntry & other)const;
+    bool isNewerThan(const HistoryEntry & other)const;
     
     /// operator <
     /// Means that the other history entry represents a newer message (thus NOT a duplicate) than the message represented by this history entry.
     /// \return true if the other entry represents a newer message from the sender of the message associated with this history entry.
-    bool operator <(const HistoryEntry & other)const;
+    bool isOlderThan(const HistoryEntry & other)const;
     
     /// Provides the suffix of the address of the sender of the message associated with this history entry.
     /// \return the suffix of the address of the sender of the message.

@@ -26,19 +26,19 @@ void HistoryEntry::update(const unsigned short & seqNum,
     _timeStamp = timeStamp;
 }
 
-bool HistoryEntry::operator==(const HistoryEntry & other)const
+bool HistoryEntry::isDuplicateOf(const HistoryEntry & other)const
 {
   return _sender == other._sender
-	  && _equals(other);
+	  && _duplicates(other);
 }
 
-bool HistoryEntry::operator >(const HistoryEntry & other)const
+bool HistoryEntry::isNewerThan(const HistoryEntry & other)const
 {
   return _sender == other._sender
     && _newerThan(other);
 }
 
-bool HistoryEntry::operator <(const HistoryEntry & other)const
+bool HistoryEntry::isOlderThan(const HistoryEntry & other)const
 {
   return _sender == other._sender
     && _olderThan(other);
@@ -59,7 +59,7 @@ unsigned long HistoryEntry::timeStamp()const
   return _timeStamp;
 }
 
-bool HistoryEntry::_equals(const HistoryEntry & other)const
+bool HistoryEntry::_duplicates(const HistoryEntry & other)const
 {
   return 
     !_olderThan(other)
@@ -68,7 +68,7 @@ bool HistoryEntry::_equals(const HistoryEntry & other)const
 
 bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 {
-  unsigned long delay = other._timeStamp - _timeStamp;
+  unsigned long delay = abs(other._timeStamp - _timeStamp);
 
   bool greaterSeq = _seqNum > other._seqNum;
   bool afterReset = (_seqNum <= other._seqNum
@@ -81,7 +81,8 @@ bool HistoryEntry::_olderThan(const HistoryEntry & other)const
 {
   unsigned long delay = abs(other._timeStamp - _timeStamp);
 
-  return _seqNum < other._seqNum && delay <= CommonValues::Routing::DELAY_LIMIT;
+  return _seqNum < other._seqNum
+	 && delay <= CommonValues::Routing::DELAY_LIMIT;
 }
 
 String HistoryEntry::toString()const
