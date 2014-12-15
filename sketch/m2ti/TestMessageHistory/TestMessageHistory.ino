@@ -33,20 +33,218 @@ void setup()
   HistoryEntry entry43(0x407620B4, 1, entry40.timeStamp()+CommonValues::Routing::DELAY_LIMIT-3);
   
   /***** TEST COMPARISON OPERATOR ******/
-  assert(entry11 > entry10);
-  assert(entry21 > entry20);
-  assert(entry31 > entry30);
-  assert(entry41 > entry40);
+  if(entry11.isNewerThan(entry10))
+  {
+    Serial.println(entry11.toString()+" is newer than "+entry10.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry11.toString()+" is newer than "+entry10.toString()+": fail");
+  }
+  if(entry11.isOlderThan(entry10))
+  {
+    Serial.println(entry11.toString()+" is older than "+entry10.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry11.toString()+" is not older than "+entry10.toString()+": ok");
+  }
   
-  assert(entry12 > entry10);
-  assert(entry22 > entry20);
-  assert(entry32 > entry30);
-  assert(entry42 > entry40);
+  if(entry21.isNewerThan(entry20))
+  {
+    Serial.println(entry21.toString()+" is newer than "+entry20.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry21.toString()+" is newer than "+entry20.toString()+": fail");
+  }
+  if(entry21.isOlderThan(entry20))
+  {
+    Serial.println(entry21.toString()+" is older than "+entry20.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry21.toString()+" is not older than "+entry20.toString()+": ok");
+  }
   
-  assert(entry13 < entry10);
-  assert(entry23 < entry20);
-  assert(entry33 < entry30);
-  assert(entry43 < entry40);
+  if(entry31.isNewerThan(entry30))
+  {
+    Serial.println(entry31.toString()+" is newer than "+entry30.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry31.toString()+" is newer than "+entry30.toString()+": fail");
+  }
+  if(entry31.isOlderThan(entry30))
+  {
+    Serial.println(entry31.toString()+" is older than "+entry30.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry31.toString()+" is not older than "+entry30.toString()+": ok");
+  }
+  
+  if(entry41.isNewerThan(entry40))
+  {
+    Serial.println(entry41.toString()+" is newer than "+entry40.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry41.toString()+" is newer than "+entry40.toString()+": fail");
+  }
+  if(entry41.isOlderThan(entry40))
+  {
+    Serial.println(entry41.toString()+" is older than "+entry40.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry41.toString()+" is not older than "+entry40.toString()+": ok");
+  }
+  
+  if(entry12.isNewerThan(entry10))
+  {
+    Serial.println(entry12.toString()+" is newer than "+entry10.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry12.toString()+" is newer than "+entry10.toString()+": fail");
+  }
+  if(entry12.isOlderThan(entry10))
+  {
+    Serial.println(entry12.toString()+" is older than "+entry10.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry12.toString()+" is not older than "+entry10.toString()+": ok");
+  }
+  
+  if(entry22.isNewerThan(entry20))
+  {
+    Serial.println(entry22.toString()+" is newer than "+entry20.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry22.toString()+" is newer than "+entry20.toString()+": fail");
+  }
+  if(entry22.isOlderThan(entry20))
+  {
+    Serial.println(entry22.toString()+" is older than "+entry20.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry22.toString()+" is not older than "+entry20.toString()+": ok");
+  }
+  
+  if(entry32.isNewerThan(entry30))
+  {
+    Serial.println(entry32.toString()+" is newer than "+entry30.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry32.toString()+" is newer than "+entry30.toString()+": fail");
+  }
+  if(entry32.isOlderThan(entry30))
+  {
+    Serial.println(entry32.toString()+" is older than "+entry30.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry32.toString()+" is not older than "+entry30.toString()+": ok");
+  }
+  
+  if(entry42.isNewerThan(entry40))
+  {
+    Serial.println(entry42.toString()+" is newer than "+entry40.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry42.toString()+" is newer than "+entry40.toString()+": fail");
+  }
+  if(entry42.isOlderThan(entry40))
+  {
+    Serial.println(entry42.toString()+" is older than "+entry40.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry42.toString()+" is not older than "+entry40.toString()+": ok");
+  }
+  
+  if(entry13.isDuplicateOf(entry10))
+  {
+    Serial.println(entry13.toString()+" is duplicate of "+entry10.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry13.toString()+" is duplicate of "+entry10.toString()+": fail");
+  }
+  if(entry13.isOlderThan(entry10))
+  {
+    Serial.println(entry13.toString()+" is older than "+entry10.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry13.toString()+" is not older than "+entry10.toString()+": ok");
+  }
+   if(entry13.isNewerThan(entry10))
+  {
+    Serial.println(entry13.toString()+" is newer than "+entry10.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry13.toString()+" is not newer than "+entry10.toString()+": ok");
+  }
+ 
+  if(entry23.isOlderThan(entry20))
+  {
+    Serial.println(entry23.toString()+" is older than "+entry20.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry23.toString()+" is older than "+entry20.toString()+": fail");
+  }
+  if(entry23.isNewerThan(entry20))
+  {
+    Serial.println(entry23.toString()+" is newer than "+entry20.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry23.toString()+" is not newer than "+entry20.toString()+": ok");
+  }
+  
+  if(entry33.isOlderThan(entry30))
+  {
+    Serial.println(entry33.toString()+" is older than "+entry30.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry33.toString()+" is older than "+entry30.toString()+": fail");
+  }
+  if(entry33.isNewerThan(entry30))
+  {
+    Serial.println(entry33.toString()+" is newer than "+entry30.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry33.toString()+" is not newer than "+entry30.toString()+": ok");
+  }
+  
+  if(entry43.isOlderThan(entry40))
+  {
+    Serial.println(entry43.toString()+" is older than "+entry40.toString()+": ok");
+  }
+  else
+  {
+    Serial.println(entry43.toString()+" is older than "+entry40.toString()+": fail");
+  }
+  if(entry43.isNewerThan(entry40))
+  {
+    Serial.println(entry43.toString()+" is newer than "+entry40.toString()+": fail");
+  }
+  else
+  {
+    Serial.println(entry43.toString()+" is not newer than "+entry40.toString()+": ok");
+  }
+  
   
   /***** TEST HISTORY MANAGEMENT ******/
   MessageHistory history;
