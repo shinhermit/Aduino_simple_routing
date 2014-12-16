@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "MessageHistory.h"
 
+#include <SoftwareSerial.h>
+
 MessageHistory::MessageHistory()
   :_first(NULL),
   _last(NULL)
@@ -21,41 +23,62 @@ MessageHistory::~MessageHistory()
   }
 }
 
-bool MessageHistory::add(const uint8_t & sender, const unsigned short & seqNum)
+bool MessageHistory::add(const unsigned long & sender,
+			 const unsigned short & seqNum,
+			 const unsigned long & timeStamp)
 {
-  HistoryEntry * entry;
+  HistoryEntry *currentEntry, *incoming;
   bool newValue = true;
+
+  incoming = new HistoryEntry(sender, seqNum, timeStamp);
 
   if(_first == NULL)
   {
-    _first = new HistoryEntry(sender, seqNum);
+    _first = incoming;
     _last = _first;
+
+    //Serial.println("History is empty => new message !");
   }
   else
   {
-    entry = findEntry(sender);
+    currentEntry = findEntry(sender);
     
-    if(entry != NULL)
+    if(currentEntry != NULL)
     {
-      if((*entry) > seqNum)
+      if(incoming->isNewerThan(*currentEntry))
       {
-        entry->update(seqNum);
-      } else {
-        newValue = false;
+        currentEntry->update(seqNum, timeStamp);
+
+	//Serial.println("incoming entry found greater => new message !");
       }
+      else
+      {
+        newValue = false;
+	//Serial.println("incoming entry not found greater => old message !");
+      }
+
+      delete incoming;
     }
     else
     {
-      _last->next = new HistoryEntry(sender, seqNum);
+      _last->next = incoming;
       _last->next->previous = _last;
       _last = _last->next;
+
+      //Serial.println("No current entry found => new message !");
     }
   }
 
   return newValue;
 }
 
-void MessageHistory::remove(uint8_t sender)
+bool MessageHistory::add(const unsigned long & sender,
+			 const unsigned short & seqNum)
+{
+  add(sender, seqNum, millis());
+}
+
+void MessageHistory::remove(const unsigned long & sender)
 {
   HistoryEntry * entry = findEntry(sender);
   
@@ -71,35 +94,25 @@ void MessageHistory::remove(uint8_t sender)
   }
 }
 
-bool MessageHistory::contains(uint8_t sender, unsigned short seqNum)const
+HistoryEntry * MessageHistory::findEntry(const unsigned long & sender)const
 {
-  HistoryEntry * entry = findEntry(sender);
   
-  if(entry == NULL)
-  {
-    return false;
-  }
-  else
-  {
-    return ( (*entry) == HistoryEntry(sender, seqNum) );
-  }
-}
-
-HistoryEntry * MessageHistory::findEntry(uint8_t sender)const
-{
-  HistoryEntry * entry = _first;
-  bool found = false;
+  HistoryEntry * currentEntry = _first;
+  HistoryEntry * foundEntry = NULL;
   
-  while(entry != NULL && !found)
+  while(currentEntry != NULL
+	&& foundEntry == NULL)
   {
-    found = (entry->sender() == sender);
-    
-    if(!found)
+    if(currentEntry->sender() == sender)
     {
-      entry = entry->next;
+      foundEntry = currentEntry;
+    }
+    else
+    {
+      currentEntry = currentEntry->next;
     }
   }
   
-  return entry;
+  return foundEntry;
 }
 

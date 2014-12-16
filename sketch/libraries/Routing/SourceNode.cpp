@@ -1,152 +1,271 @@
 #include "SourceNode.h"
+#include "CommonValues.h"
 #include "MessageConverter.h"
 #include "AlertMessage.h"
-#include "CommonValues.h"
 
 #include <SoftwareSerial.h>
 
-SourceNode::SourceNode(const uint8_t & myAddress, AbstractSensor & sensor)
-  :_myAddress(myAddress),
-  _sensor(&sensor),
-  _xbee(),
-  _level(0)
+SourceNode SourceNode::_instance = SourceNode::SourceNode();
+
+void SourceNode::initialize()
 {
-  _xbee.begin(CommonValues::Routing::XBEE_RATE);
+	_xbee.begin(CommonValues::Routing::XBEE_RATE);
 }
 
 SourceNode::SourceNode()
-  :_myAddress(0),
-  _sensor(NULL),
-  _xbee(),
-  _level(0)
+:_seqNum(0),
+ 	 _broadcast(true),
+	_myAddress(0),
+	_gatewayToSink(0),
+	_lastDiscoverySequenceNumber(0),
+	_lastAlertSequenceNumber(0),
+	_xbee(),
+	_rx16(),
+	_rx64(),
+	_history()
 {
-  _xbee.begin(CommonValues::Routing::XBEE_RATE);
+	initialize();
 }
 
-void SourceNode::initialize(const uint8_t & myAddress, AbstractSensor & sensor)
+SourceNode::SourceNode(const SourceNode & other)
+:_seqNum(other._seqNum),
+ 	 _broadcast(other._broadcast),
+	_myAddress(other._myAddress),
+	_gatewayToSink(other._gatewayToSink),
+	_lastDiscoverySequenceNumber(other._lastDiscoverySequenceNumber),
+	_lastAlertSequenceNumber(other._lastAlertSequenceNumber),
+	_xbee(other._xbee),
+	_rx16(other._rx16),
+	_rx64(other._rx64),
+	_history(other._history)
 {
-  _myAddress = myAddress;
-  _sensor = &sensor;
+	initialize();
+}
+
+SourceNode & SourceNode::getInstance()
+{
+	return SourceNode::_instance;
+}
+
+void SourceNode::setAddress(const unsigned long & myAddress)
+{
+	_myAddress = myAddress;
 }
 
 String SourceNode::receiveMessage()
 {
-  char* data;
-  uint8_t data_len;
-  
-  _xbee.readPacket();
-  
-  if (_xbee.getResponse().getApiId() == RX_16_RESPONSE)
-  {
-    _xbee.getResponse().getRx16Response(_rx16);
-    
-    data = (char*)_rx16.getData();
-    data_len = _rx16.getDataLength();     
-  } 
-  else if (_xbee.getResponse().getApiId() == RX_64_RESPONSE)
-  {
-    _xbee.getResponse().getRx64Response(_rx64);
-    
-    data = (char*)_rx64.getData();
-    data_len = _rx64.getDataLength();
-  }
-  
-  return String(data);
+	char* data;
+	uint8_t data_len;
+
+	if (_xbee.getResponse().getApiId() == TX_STATUS_RESPONSE)
+	{
+	}
+	else if (_xbee.getResponse().getApiId() == RX_16_RESPONSE)
+	{
+		_xbee.getResponse().getRx16Response(_rx16);
+
+		data = (char*)_rx16.getData();
+		data_len = _rx16.getDataLength();     
+	} 
+	else if (_xbee.getResponse().getApiId() == RX_64_RESPONSE)
+	{
+		_xbee.getResponse().getRx64Response(_rx64);
+
+		data = (char*)_rx64.getData();
+		data_len = _rx64.getDataLength();
+	}
+
+	return String(data);
 }
 
+void SourceNode::sendSensorValue () 
+{
+	unsigned short alertType = CommonValues::Alert::DEFAULT_ALERT_TYPE; 
+	float sensorValue = 8.99;
 
+	Alert alert(alertType, sensorValue);
+	AlertMessage message(
+		_myAddress,
+		getSequenceNumber(),
+		alert
+	);
+
+	broadcastMessage(message);
+}
+
+unsigned short SourceNode::getSequenceNumber()
+{
+	_lastAlertSequenceNumber = (_lastAlertSequenceNumber + 1) % 256;
+
+	return _lastAlertSequenceNumber;
+}
+
+/// Attempts to read message, returns true if successful, false otherwise
+bool SourceNode::processMessage() 
+{
+	String strMess;
+	Message * mess;
+	bool isNew;
+	bool messageProcessed = false;
+	unsigned long timeStamp;
+
+	Serial.println("\nChecking for messages.");
+
+	_xbee.readPacket();
+
+	if (_xbee.getResponse().isAvailable())
+	{
+		timeStamp = millis();
+
+		messageProcessed = true;
+		Serial.println("Message available.");
+
+		strMess = receiveMessage();
+
+		mess = MessageConverter::parse(strMess);
+Serial.println(mess->toString());
+		isNew = _history.add(mess->getSender(), mess->getSequenceNumber(), timeStamp);
+
+		if(isNew)
+		{/*
+			if(mess->getMessageType() == Message::ALERT)
+			{	
+				//new alert detected
+				Serial.print("\n\n\nReceived alert from ");
+				Serial.print(mess->getSender());
+				Serial.println(".");
+				Serial.print("\tType alerte: ");
+				Serial.print(mess->getAlert().getAlertType());
+				Serial.print(", valeur: ");
+				Serial.println(mess->getAlert().getSensorValue());
+				Serial.print("\n\n");
+
+				if (_level > 0 && mess->getSenderLevel() > _level) 
+				{
+					//TODO Check test
+					//our level is set since != 0
+					//Message originates from sender with higher level	
+					Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
+					AlertMessage message(
+						mess->getSender(),
+						mess->getSequenceNumber(),
+						alert
+					);
+
+					if (_broadcast)
+					{
+						broadcastMessage(message);
+					}
+					else
+					{
+						unicastMessageToSink(message);
+					}
+				}
+				else 
+				{
+					//TODO
+					//_level not set yet, no discovery received
+					//store message for the moment
+					//Just drop it!
+				}
+			}
+			else
+			{
+				//Discovery message
+				//if (_level == 0 || _lastDiscoverySequenceNumber != mess->getSequenceNumber())
+				//{
+					//set level, record sequence number, gateway to sink then broadcast
+					//if first discovery or new sequence number
+					_level = mess->getSenderLevel() + 1;
+					_lastDiscoverySequenceNumber = mess->getSequenceNumber();
+					_gatewayToSink = mess->getSender();
+					DiscoveryMessage message(
+							_myAddress,
+							_lastDiscoverySequenceNumber,
+							_level
+							);
+					Serial.println("Sink node level is : " + String(mess->getSenderLevel()));
+					Serial.println("My level is : " + String(_level));
+					if (_broadcast)
+					{
+						broadcastMessage(message);
+					}
+					else
+					{
+						unicastMessageToSink(message);
+					}
+				//}
+
+
+				Serial.print("\n\n\nReceived discovery from ");
+				  Serial.print(mess->getSender());
+				  Serial.println(".");
+				  Serial.println("Sender level : "+String(mess->getSenderLevel()));
+				  Serial.println("My level : "+String(_level));
+				  Serial.println("Sequence number : "+String(mess->getSequenceNumber()));
+				  Serial.print("\n\n");
+			}*/
+				  Serial.println("new");
+		}
+		else
+		{
+			Serial.println(String("Message ")+strMess+String(" found in history."));
+		}
+
+		delete mess;
+	}
+
+	return messageProcessed;
+}
+
+/// Process all available messages.
 void SourceNode::processMessages()
 {
-  //Can receive two types of messages
-  // - alert to re broadcast
-  // - discover messages
-  String strMess;
-  Message * mess;
+	bool messageProcessed;
 
-  if (_xbee.getResponse().isAvailable())
-  {
-    strMess = receiveMessage();
-    
-    mess = MessageConverter::parse(strMess);
-    unsigned short senderLevel = mess->getSenderLevel();
-
-    if (_history.add(mess->getSender(), mess->getSequenceNumber())) 
-    {
-        //new message received
-        if (senderLevel > _level && mess->getMessageType() == Message::ALERT) 
-        {
-            //forward alert on route to sink without modification
-            _sendString(strMess);
-        } 
-        else 
-        {
-            //discovery message, let's set our level if apprpriate
-            if (mess->getMessageType() == Message::DISCOVERY) 
-            {
-                if (_level == 0) 
-                {
-                    _level = senderLevel + 1;
-                    //update senderLevel in message
-                    mess->setSenderLevel(_level);
-                }
-            }
-        }
-    }
-    
-//      Serial.print("Received alert from ");
-//      Serial.print(mess->getSender());
-//      Serial.println(".");
-//      Serial.print("\tType alerte: ");
-//      Serial.print(mess->getAlert().getAlertType());
-//      Serial.print(", valeur: ");
-//      Serial.println(mess->getAlert().getSensorValue());
-      
-    }
-    
-    delete mess;
+	do 
+	{
+		messageProcessed = processMessage();
+	}
+	while(messageProcessed);
 }
 
-
-float SourceNode::readSensor()const
+void SourceNode::sendMessage(XBeeAddress64 & addr, const Message & mess)
 {
-  return _sensor->readValue();
+	String serializedMess = MessageConverter::serialize(mess);
+	char strMess[serializedMess.length()];
+	serializedMess.toCharArray(strMess, serializedMess.length());
+
+	Tx64Request tx = Tx64Request(addr, (uint8_t*)strMess, sizeof(strMess));
+	_xbee.send(tx);
+
+	TxStatusResponse txStatus = TxStatusResponse();
 }
 
-void SourceNode::forwardAlert(const Alert & alert)
+void SourceNode::unicastMessageToSink(const Message & mess)
 {
-        
+	Serial.println("About to send unicast message to gateway");
+
+	XBeeAddress64 addr = XBeeAddress64(
+		CommonValues::Message::MAC_PREFIX,
+		_gatewayToSink
+	);
+
+	sendMessage(addr, mess);
+
+	Serial.println("\n\nDone sending message to gateway");
 }
 
-void SourceNode::sendAlert(const Alert & alert)
+void SourceNode::broadcastMessage(const Message & mess)
 {
-  AlertMessage alertMessage(_myAddress, _getAlertSequenceNumber(), alert);
+	Serial.println("About to broadcast message");
 
-  _sendString(MessageConverter::serialize(alertMessage));
+	XBeeAddress64 addr = XBeeAddress64(
+		CommonValues::Message::BROADCAST_PREFIX,
+		CommonValues::Message::BROADCAST_SUFFIX
+	);
+
+	sendMessage(addr, mess);
+
+	Serial.println("\n\nDone broadcasting message");
 }
-
-void SourceNode::_sendString(const String & message)
-{
-  // Serialize the message
-  char strMess[message.length()];
-  message.toCharArray(strMess, message.length());
-
-  Serial.println(String("\nSending ")+strMess);
-  
-  // Send xbee request
-  XBeeAddress64 addr = XBeeAddress64(0x00000000, 0x0000FFFF);
-  Tx64Request tx = Tx64Request(addr,//CommonValues::Message::BROADCAST_ADDRESS,
-                                (uint8_t*)strMess,
-                                sizeof(strMess));
-  _xbee.send(tx);
-
-  TxStatusResponse txStatus = TxStatusResponse();
-}
-
-unsigned short SourceNode::_getAlertSequenceNumber() 
-{
-  if (_alertSequenceNumber > 255) {
-    _alertSequenceNumber = 0;
-  }
-
-  return _alertSequenceNumber++;
-} 

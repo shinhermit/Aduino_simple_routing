@@ -39,7 +39,7 @@ SinkNode & SinkNode::getInstance()
 String SinkNode::receiveMessage()
 {
   char* data;
-  uint8_t data_len;
+  unsigned long data_len;
   
   if (_xbee.getResponse().getApiId() == TX_STATUS_RESPONSE)
   {
@@ -62,32 +62,23 @@ String SinkNode::receiveMessage()
   return String(data);
 }
 
-bool SinkNode::isNew(const Message & mess)const
-{
-  HistoryEntry * old = _history.findEntry(mess.getSender());
-  
-  if(old == NULL)
-  {
-    return true;
-  }
-  else
-  {
-    return (*old) < HistoryEntry(mess.getSender(), mess.getSequenceNumber());
-  }
-}
-
-void SinkNode::processMessages()
+bool SinkNode::processNextMessage()
 {
   String strMess;
   Message * mess;
+  bool isNew, wasAvailable = false;
+  unsigned long timeStamp;
 
-  Serial.println("\nChecking message buffer.");
+  //Serial.println("\nChecking message buffer.");
 
   _xbee.readPacket();
 
   if (_xbee.getResponse().isAvailable())
   {
-    Serial.println("Message available.");
+    timeStamp = millis();
+    wasAvailable = true;
+
+    //Serial.println("Message available.");
 
     strMess = receiveMessage();
     
@@ -95,18 +86,12 @@ void SinkNode::processMessages()
     
     if(mess->getMessageType() == Message::ALERT)
     {
-      if(isNew(*mess))
+	isNew = _history.add(mess->getSender(),
+			     mess->getSequenceNumber(),
+			     timeStamp);
+      if(isNew)
       {
-	Serial.print("\n\n\nReceived alert from ");
-	Serial.print(mess->getSender());
-	Serial.println(".");
-	Serial.print("\tType alerte: ");
-	Serial.print(mess->getAlert().getAlertType());
-	Serial.print(", valeur: ");
-	Serial.println(mess->getAlert().getSensorValue());
-	Serial.print("\n\n");
-      
-	_history.add(mess->getSender(), mess->getSequenceNumber());
+	Serial.println(mess->toString());
       }
       else
       {
@@ -120,6 +105,18 @@ void SinkNode::processMessages()
     
     delete mess;
   }
+
+  return wasAvailable;
+}
+
+void SinkNode::processMessages()
+{
+  bool wasAvailable = false;
+  do
+  {
+    wasAvailable = processNextMessage();
+  }
+  while(wasAvailable);
 }
 
 void SinkNode::broadcastMessage(const DiscoveryMessage & mess)

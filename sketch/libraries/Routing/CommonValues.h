@@ -30,13 +30,13 @@ namespace CommonValues
   {
     public:
       /// The prefix of the MAC addresses.
-      static const uint8_t MAC_PREFIX;
+      static const unsigned long MAC_PREFIX;
       /// The suffix of the MAC address if the sink node.
-      static const uint8_t SINK_SUFFIX;
+      static const unsigned long SINK_SUFFIX;
       /// The prefix of the MAC broadcast address.
-      static const uint8_t BROADCAST_PREFIX;
+      static const unsigned long BROADCAST_PREFIX;
       /// The suffix of the MAC broadcast address.
-      static const uint8_t BROADCAST_SUFFIX;
+      static const unsigned long BROADCAST_SUFFIX;
       /// The number which is to be used as the limit of the sequence numbers.
       static const unsigned short SEQUENCE_NUMBER_MOD;
     
@@ -70,6 +70,10 @@ namespace CommonValues
       static const unsigned short SINK_DELAY;
       /// The time the source nodes wait before sending messages.
       static const unsigned short SOURCE_DELAY;
+      /// The maximum numbers for peers in the arduino network (estimation).
+      static const unsigned short MAX_PEERS;
+      /// The maximum delay (in seconds) between 2 messages after which we consider that the new messsage can not be a duplication of the first one (it is thus considered that a lot of messages where lost).
+      static const unsigned long DELAY_LIMIT;
   };
 }
 

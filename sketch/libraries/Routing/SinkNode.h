@@ -67,10 +67,10 @@ class SinkNode
     String receiveMessage();
     
     /**
-     * Tells whether a message has already been encountered or not.
-     * \return true if the message has already been treated, false otherwise.
+     * Processes a unique message from the receive buffer.
+     * \return true if a message was available, false otherwise.
      */
-    bool isNew(const Message & mess)const;
+    bool processNextMessage();
     
   public:
     /**

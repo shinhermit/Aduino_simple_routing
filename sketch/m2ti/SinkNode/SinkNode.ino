@@ -1,4 +1,4 @@
- #include <XBee.h> // make it added to include path
+#include <XBee.h> // make it added to include path
 #include <SoftwareSerial.h>
 
 #include <SinkNode.h>

@@ -3,32 +3,34 @@
 #include <HumiditySensor.h>
 #include <SourceNode.h>
 #include <CommonValues.h>
-const uint8_t myAddress = 0x12345678;
-int pinNumber = 8;
+//#include <LiquidCrystal_I2C.h>
 
-HumiditySensor humiditySensor(pinNumber);
+const unsigned long myAddress = 0x12345678;
 
-SourceNode sourceNode(myAddress, humiditySensor);
+//int pinNumber = 8;
 
-Alert alert(CommonValues::Alert::DEFAULT_ALERT_TYPE);
+//HumiditySensor humiditySensor(pinNumber);
 
-float sensorValue = 0.;
+//SourceNode sourceNode(myAddress, humiditySensor);
+
+//SourceNode sourceNode(myAddress);
+
+//SourceNode sourceNode();
+
+SourceNode sourceNode = SourceNode::getInstance();
+
 
 void setup()
 {
-  Serial.begin(CommonValues::Routing::XBEE_RATE);
+  sourceNode.setAddress(myAddress);
 }
 
 void loop()
-{
-  //sourceNode.processMessages();
+{  
+  sourceNode.processMessages();
   
-  sensorValue = sourceNode.readSensor();
+  //sourceNode.sendSensorValue();
   
-  alert.setSensorValue(sensorValue);
-  
-  sourceNode.sendAlert(alert);
-  
-  delay(5000);
+  delay(1000);
 }
 

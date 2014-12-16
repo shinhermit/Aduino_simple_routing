@@ -13,28 +13,48 @@ class MessageHistory
     MessageHistory();
     
     /// Destructor.
-    /// Delete HistoryEntry linked list.
+    /// Deletes HistoryEntry linked list.
     ~MessageHistory();
     
     /// Adds an entry to the history.
-    /// If no entry related to the sender exists, the entry is added.<br/>
+    /// <p>If no entry related to the sender exists, the entry is added.<br/>
     /// If an entry already exists:
     /// <ul>
-    ///   <li>if the sequence number shows a newer message, the old entry is updated;</li>
+    ///   <li>if the comparison with the existing entry shows a newer message, the entry is added;</li>
     ///   <li>otherwise, the addition is ignored.</li>
     /// </ul>
-    bool add(const uint8_t & sender, const unsigned short & seqNum);
+    /// </p>
+    /// \param sender the suffix of the address of the sender of the message which is to taken into accout in the history.
+    /// \param seqNum the sequence number of the message.
+    /// \param timeStamp the time at which the message arrived.
+    /// \return true if an entry is actually added to the history, false if it has been ignored.
+    bool add(const unsigned long & sender,
+	     const unsigned short & seqNum,
+	     const unsigned long & timeStamp);
+    
+    /// Adds an entry to the history.
+    /// <p>If no entry related to the sender exists, the entry is added.<br/>
+    /// If an entry already exists:
+    /// <ul>
+    ///   <li>if the comparison with the existing entry shows a newer message, the entry is added;</li>
+    ///   <li>otherwise, the addition is ignored.</li>
+    /// </ul>
+    /// </p>
+    /// <p> When a new entry is added to the history, it is marked with the current timestamp</p>
+    /// \param sender the suffix of the address of the sender of the message which is to taken into accout in the history.
+    /// \param seqNum the sequence number of the message.
+    /// \return true if an entry is actually added to the history, false if it has been ignored.
+    bool add(const unsigned long & sender,
+	     const unsigned short & seqNum);
     
     /// Deletes an entry from the history.
-    void remove(uint8_t sender);
-    
-    /// Tells whether the history contains an entry for
-    /// the given source with the given sequence number or not.
-    bool contains(uint8_t sender, unsigned short seqNum)const;
+    /// \param sender the suffix of the address of the sender of the message which is to taken into accout in the history.
+    void remove(const unsigned long & sender);
     
     /// Retrives the history entry of the sender.
-    /// null is return if no entry found.
-    HistoryEntry * findEntry(uint8_t sender)const;
+    /// \param sender the suffix of the address of the sender of the message which is to taken into accout in the history.
+    /// \return the corresponding entry if found, null otherwise.
+    HistoryEntry * findEntry(const unsigned long & sender)const;
     
   private:
     /// The first history entry of the linked-list history entries.

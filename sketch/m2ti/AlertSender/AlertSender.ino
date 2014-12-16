@@ -28,7 +28,7 @@ void loop()
   seqNum = (seqNum + 1) % CommonValues::Message::SEQUENCE_NUMBER_MOD;
   
   Alert alert(Message::ALERT, sensorValue);
-  AlertMessage mess(0x40922070, seqNum, alert);
+  AlertMessage mess(0x408BC822, seqNum, alert);
   
   // Serialize the message
   String serialMess = MessageConverter::serialize(mess);

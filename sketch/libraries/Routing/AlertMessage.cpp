@@ -30,3 +30,8 @@ void AlertMessage::setAlert(const Alert & alert)
   _alert = alert;
 }
 
+
+String AlertMessage::_getSpecialString()const
+{
+  return String("\t")+_alert.toString();
+}
