@@ -1,7 +1,7 @@
 #ifndef ABSTRACTSENSOR_H
 #define ABSTRACTSENSOR_H
 
-#include "String.h"
+#include <Arduino.h>
 
 class AbstractSensor {
   public:

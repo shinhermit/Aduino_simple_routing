@@ -2,7 +2,6 @@
 #define MESSAGE_H
 
 #include "Alert.h"
-#include "String.h"
 
 /**
  * Represents a message which can be sent to a node on the arduino

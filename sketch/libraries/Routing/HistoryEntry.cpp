@@ -1,7 +1,6 @@
 #include "HistoryEntry.h"
-#include <stdlib.h>
 #include <CommonValues.h>
-#include <math.h>
+#include <math.h> // for abs()
 
 HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const unsigned long & timeStamp)
   :_sender(sender),

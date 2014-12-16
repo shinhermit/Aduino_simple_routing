@@ -6,15 +6,12 @@
 #ifndef SINK_NODE_H
 #define SINK_NODE_H
 
-#include <stdint.h>
-
 #include <Arduino.h>
 
 #include <XBee.h>
 
 #include "DiscoveryMessage.h"
 #include "MessageHistory.h"
-#include "String.h"
 
 /**
  * The sink node of the simple routing protocol.

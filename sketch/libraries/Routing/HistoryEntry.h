@@ -2,8 +2,6 @@
 #define HISTORY_ENTRY_H
 
 #include <Arduino.h>
-#include <stdint.h>
-#include "String.h"
 
 /**
 * Entries for the message history.

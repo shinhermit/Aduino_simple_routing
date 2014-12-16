@@ -1,7 +1,6 @@
 #ifndef MESSAGE_CONVERTER_H
 #define MESSAGE_CONVERTER_H
 
-#include "String.h"
 #include "Message.h"
 
 /**
@@ -28,6 +27,13 @@ class MessageConverter
      * \return the String representation of the provided value.
      */
     static String floatToString(const float & val);
+
+    /**
+     * Converts a string representing a float value into this float value.
+     * \param val the string representation of a float value which is to be converted.
+     * \return the corresponding float value.
+     */
+    static float stringToFloat(const String & val);
     
   public:
   
