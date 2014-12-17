@@ -1,6 +1,5 @@
 #include <XBee.h> // make it added to include path
-#include <SoftwareSerial.h> 
-#include <Time.h>
+#include <SoftwareSerial.h>
 
 #include <SinkNode.h>
 #include <CommonValues.h>

@@ -33,7 +33,7 @@ class HistoryEntry
     /// \param timeStamp the time at which the message associated with this history entry arrived.
     HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const unsigned long & timeStamp);
     
-    /// Constructor.
+    /// Copy constructor.
     HistoryEntry(const HistoryEntry & other);
     
     /// Updates the entry to the lastest sequence number.<br/>
