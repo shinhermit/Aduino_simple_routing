@@ -16,6 +16,7 @@ void Lcd::display(const String & mess)
     _initialized = true;
   }
     
+  _lcd.backlight();
   _lcd.print(mess);
 }
 
@@ -29,5 +30,6 @@ void Lcd::display(char * mess)
     _initialized = true;
   }
 
+  _lcd.backlight();
   _lcd.print(mess);
 }
