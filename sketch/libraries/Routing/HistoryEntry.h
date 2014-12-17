@@ -19,7 +19,7 @@ class HistoryEntry
     bool _olderThan(const HistoryEntry & other)const;
     bool _newerThan(const HistoryEntry & other)const;
 
-    /// Calculates the absolute difference of two unsigned
+    /// Calculates the difference of two unsigned
     /// values.
     /// \param x one of the value implied in the difference
     /// \param y the other value implied in the difference.
