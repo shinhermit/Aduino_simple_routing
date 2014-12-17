@@ -60,16 +60,19 @@ unsigned long HistoryEntry::timeStamp()const
 
 bool HistoryEntry::_duplicates(const HistoryEntry & other)const
 {
-  return 
-    !_olderThan(other)
-    && !_newerThan(other);
+  unsigned long delay = _uabs(other._timeStamp, _timeStamp);
+
+  return
+    _seqNum == other._seqNum
+    && delay <= CommonValues::Routing::DELAY_LIMIT;
 }
 
 bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 {
-  unsigned long delay = abs(other._timeStamp - _timeStamp);
+  unsigned long delay = _uabs(other._timeStamp, _timeStamp);
 
   bool greaterSeq = _seqNum > other._seqNum;
+
   bool afterReset = (_seqNum <= other._seqNum
 		     && delay > CommonValues::Routing::DELAY_LIMIT);
 
@@ -78,10 +81,13 @@ bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 
 bool HistoryEntry::_olderThan(const HistoryEntry & other)const
 {
-  unsigned long delay = abs(other._timeStamp - _timeStamp);
+  return !_duplicates(other) && !_newerThan(other);
+}
 
-  return _seqNum < other._seqNum
-	 && delay <= CommonValues::Routing::DELAY_LIMIT;
+unsigned long HistoryEntry::_uabs(const unsigned long & x,
+			 const unsigned long & y)const
+{
+  return (x > y) ? x - y : y - x;
 }
 
 String HistoryEntry::toString()const

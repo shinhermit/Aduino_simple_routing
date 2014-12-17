@@ -18,6 +18,13 @@ class HistoryEntry
     bool _duplicates(const HistoryEntry & other)const;
     bool _olderThan(const HistoryEntry & other)const;
     bool _newerThan(const HistoryEntry & other)const;
+
+    /// Calculates the absolute difference of two unsigned
+    /// values.
+    /// \param x one of the value implied in the difference
+    /// \param y the other value implied in the difference.
+    /// \return the absolute difference of the provided unsigned long values.
+    unsigned long _uabs(const unsigned long & x, const unsigned long & y)const;
     
   public:
     /// The previous entry in the linked list
