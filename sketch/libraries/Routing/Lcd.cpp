@@ -21,12 +21,14 @@ Lcd::Lcd()
 
 void Lcd::display(const String & mess)
 {
+  _lcd.backlight();
   _lcd.print(mess);
 }
 
 
 void Lcd::display(char * mess)
 {
+  _lcd.backlight();
   _lcd.print(mess);
 }
 
