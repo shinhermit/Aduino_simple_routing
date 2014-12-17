@@ -7,10 +7,8 @@
 
 void setup()
 {
-  Lcd & lcd = Lcd::getInstance();
-  
-  lcd.display("Hello");
-  lcd.display("Bye");
+  Lcd::display("Hello");
+  Lcd::display("Bye");
 }
 
 void loop()

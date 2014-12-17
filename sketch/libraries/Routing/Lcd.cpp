@@ -1,36 +1,33 @@
 #include "Lcd.h"
 #include "CommonValues.h"
 
-Lcd Lcd::_instance;
+LiquidCrystal_I2C Lcd::_lcd(CommonValues::Lcd::LCD_ADDR,
+			    CommonValues::Lcd::LCD_NUMBER_OF_COLUMNS,
+			    CommonValues::Lcd::LCD_NUMBER_OF_ROWS);
 
-Lcd::Lcd(const unsigned long & lcdAddr,
-	 const unsigned long & nbCols,
-	 const unsigned long & nbRows)
-  :_lcd(lcdAddr, nbCols, nbRows)
-{
-  _lcd.init(); 
-}
-
-Lcd::Lcd()
-   :_lcd(CommonValues::Lcd::LCD_ADDR,
-	 CommonValues::Lcd::LCD_NUMBER_OF_COLUMNS,
-	 CommonValues::Lcd::LCD_NUMBER_OF_ROWS)
-{
-  _lcd.init(); 
-}
+bool Lcd::_initialized = false;
 
 void Lcd::display(const String & mess)
 {
+  if(!_initialized)
+  {
+    _lcd.init();
+
+    _initialized = true;
+  }
+    
   _lcd.print(mess);
 }
 
 
 void Lcd::display(char * mess)
 {
-  _lcd.print(mess);
-}
+  if(!_initialized)
+  {
+    _lcd.init();
 
-Lcd & Lcd::getInstance()
-{
-  return _instance;
+    _initialized = true;
+  }
+
+  _lcd.print(mess);
 }
