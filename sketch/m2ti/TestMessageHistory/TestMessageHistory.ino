@@ -9,15 +9,23 @@ void setup()
   Serial.begin(CommonValues::Routing::XBEE_RATE);
   
   // Originals seq 4
+  delay(10);
   HistoryEntry entry10(0x407620B1, 4, millis());
+  delay(10);
   HistoryEntry entry20(0x407620B2, 4, millis());
+  delay(10);
   HistoryEntry entry30(0x407620B3, 4, millis());
+  delay(10);
   HistoryEntry entry40(0x407620B4, 4, millis());
   
   // Newer (seq > 4)
+  delay(10);
   HistoryEntry entry11(0x407620B1, 5, millis());
+  delay(10);
   HistoryEntry entry21(0x407620B2, 6, millis());
+  delay(10);
   HistoryEntry entry31(0x407620B3, 7, millis());
+  delay(10);
   HistoryEntry entry41(0x407620B4, 8, millis());
   
   // Newer (after reset)
