@@ -1,7 +1,7 @@
 #ifndef ALERT_H
 #define ALERT_H
 
-#include "String.h"
+#include <Arduino.h>
 
 /**
  * Represents an alert which is is to be sent to the sink node.

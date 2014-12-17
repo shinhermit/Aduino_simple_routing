@@ -1,12 +1,8 @@
 #ifndef COMMON_VALUES_H
 #define COMMON_VALUES_H
 
-#include <stdint.h>
-
 #include <Arduino.h>
 #include <XBee.h>
-
-#include "String.h"
 
 /**
  * Holds the constants of the application.

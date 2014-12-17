@@ -1,5 +1,5 @@
 #include "Message.h"
-#include <stdio.h>
+#include <stdio.h> // for sprintf
 
 const Message::MessageType Message::DEFAULT_TYPE = Message::ALERT;
 

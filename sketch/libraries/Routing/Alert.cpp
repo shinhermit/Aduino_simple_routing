@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "Alert.h"
 #include "CommonValues.h"
 
@@ -53,8 +54,11 @@ void Alert::setSensorValue(const float & sensorValue)
 
 String Alert::toString()const
 {
+  char sensorValue[30];
+  sprintf(sensorValue, "%f", sensorValue);
+
   return String("Alert {type: ")
-         +_alertType
-         +String(", value: ")
-         +_sensorValue+String("}");
+         + _alertType
+         + String(", value: ")
+         + String(sensorValue) + String("}");
 }

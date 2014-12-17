@@ -6,15 +6,12 @@
 #ifndef SOURCE_NODE_H
 #define SOURCE_NODE_H
 
-#include <stdint.h>
-
 #include <Arduino.h>
 
 #include <XBee.h>
 
 #include "DiscoveryMessage.h"
 #include "MessageHistory.h"
-#include "String.h"
 
 class SourceNode
 {

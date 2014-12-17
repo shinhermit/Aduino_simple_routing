@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "MessageHistory.h"
 
 #include <SoftwareSerial.h>

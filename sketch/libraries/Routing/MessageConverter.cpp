@@ -1,10 +1,9 @@
+#include <stdlib.h> /* strtof */
+
 #include "MessageConverter.h"
 #include "CommonValues.h"
 #include "AlertMessage.h"
 #include "DiscoveryMessage.h"
-
-#include <math.h>
-#include <stdlib.h>
 
 #include <SoftwareSerial.h>
 
@@ -57,6 +56,14 @@ String MessageConverter::floatToString(const float & val)
   return String("")+ent+String(".")+dec;
 }
 
+float MessageConverter::stringToFloat(const String & val)
+{
+  char strVal[31];
+  val.toCharArray(strVal, 30);
+
+  return atof(strVal);
+}
+
 Message * MessageConverter::parse(const String & mess)
 {
   const unsigned short NB_TOKENS = 6;
@@ -88,7 +95,7 @@ Message * MessageConverter::parse(const String & mess)
 	//TODO : remove
 	Serial.println("Alert parsed");
       alert.setAlertType((unsigned short)tokens[4].toInt());
-      alert.setSensorValue(tokens[5].toFloat());
+      alert.setSensorValue(MessageConverter::stringToFloat(tokens[5]));
       
       message = new AlertMessage(sender, seqNum, alert);
       break;
