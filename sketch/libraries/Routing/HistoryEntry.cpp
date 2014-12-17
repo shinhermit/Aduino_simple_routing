@@ -60,7 +60,7 @@ unsigned long HistoryEntry::timeStamp()const
 
 bool HistoryEntry::_duplicates(const HistoryEntry & other)const
 {
-  unsigned long delay = _uabs(other._timeStamp, _timeStamp);
+  unsigned long delay = _usingedDiff(other._timeStamp, _timeStamp);
 
   return
     _seqNum == other._seqNum
@@ -69,7 +69,7 @@ bool HistoryEntry::_duplicates(const HistoryEntry & other)const
 
 bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 {
-  unsigned long delay = _uabs(other._timeStamp, _timeStamp);
+  unsigned long delay = _usingedDiff(other._timeStamp, _timeStamp);
 
   bool greaterSeq = _seqNum > other._seqNum;
 
@@ -84,10 +84,11 @@ bool HistoryEntry::_olderThan(const HistoryEntry & other)const
   return !_duplicates(other) && !_newerThan(other);
 }
 
-unsigned long HistoryEntry::_uabs(const unsigned long & x,
+long double HistoryEntry::_usingedDiff(const unsigned long & x,
 			 const unsigned long & y)const
 {
   return (x > y) ? x - y : y - x;
+  //  return (x > y) ? x - y : -(y - x);
 }
 
 String HistoryEntry::toString()const
