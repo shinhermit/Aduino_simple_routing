@@ -81,8 +81,15 @@ bool HistoryEntry::_olderThan(const HistoryEntry & other)const
 {
   unsigned long delay = abs(other._timeStamp - _timeStamp);
 
-  return _seqNum < other._seqNum
-	 && delay <= CommonValues::Routing::DELAY_LIMIT;
+  bool smallerSeq = _seqNum < other._seqNum;
+
+  bool afterReset = (_seqNum >= other._seqNum
+		     && delay > CommonValues::Routing::DELAY_LIMIT);
+
+  return smallerSeq || afterReset;
+
+//  return _seqNum < other._seqNum
+//	 && delay <= CommonValues::Routing::DELAY_LIMIT;
 }
 
 String HistoryEntry::toString()const
