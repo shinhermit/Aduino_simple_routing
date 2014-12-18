@@ -7,7 +7,7 @@
 
 void setup()
 {
-  Lcd::display("Hello");
+  Lcd::display("Hello ");
   Lcd::display("Bye");
 }
 

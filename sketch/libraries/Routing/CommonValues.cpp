@@ -32,7 +32,7 @@ const unsigned short CommonValues::Routing::MAX_PEERS = 10;
 const unsigned long CommonValues::Routing::DELAY_LIMIT =
   CommonValues::Routing::SOURCE_DELAY * CommonValues::Routing::MAX_PEERS;
 
-const unsigned long CommonValues::Lcd::LCD_ADDR = 0x25;
+const unsigned long CommonValues::Lcd::LCD_ADDR = 0x20;
 
 const unsigned long CommonValues::Lcd::LCD_NUMBER_OF_COLUMNS = 16;
 
