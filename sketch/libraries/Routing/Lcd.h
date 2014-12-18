@@ -25,15 +25,23 @@ class Lcd
       const unsigned long & nbCols,
       const unsigned long & nbRows);
 
-  /**
-   * Creates an object which can display to an LCD screen.
-   */
-  Lcd();
-
   /// The singleton instance of this LCD printer class.
-  static Lcd _instance;
+  static Lcd * _instance;
 
  public:
+  /**
+   * Procides the singleton instance of this LCD printer class.
+   * \return the singleton instance of this LCD printer class.
+   */
+  static Lcd & getInstance(const unsigned long & lcdAddr,
+			   const unsigned long & nbCols,
+			   const unsigned long & nbRows);
+
+  /**
+   * Destructor.
+   */
+  ~Lcd();
+
   /**
    * Procides the singleton instance of this LCD printer class.
    * \return the singleton instance of this LCD printer class.

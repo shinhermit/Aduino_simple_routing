@@ -10,7 +10,7 @@ void setup()
   Lcd & lcd = Lcd::getInstance();
   
   //delay(1000);
-  lcd.display("Hello");
+  lcd.display("Hello ");
   delay(5000);
   lcd.display("Bye");
 }
