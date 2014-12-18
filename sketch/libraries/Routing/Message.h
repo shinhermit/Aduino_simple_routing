@@ -16,8 +16,8 @@ class Message
    */
   enum MessageType
   {
-    ALERT = 0, /**< A Message which carries an alert. */
-    DISCOVERY = 1 /**< A message which carries path discovery information.*/
+    DISCOVERY = 0, /**< A message which carries path discovery information.*/
+    ALERT = 1 /**< A Message which carries an alert. */
   };
   
   /// The default type of messages.

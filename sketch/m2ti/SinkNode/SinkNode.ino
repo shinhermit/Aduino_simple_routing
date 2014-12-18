@@ -17,7 +17,7 @@ void setup()
 
 void loop()
 {
-//  sinkNode.processMessages();
+  sinkNode.processMessages();
   
   sinkNode.discover();
 

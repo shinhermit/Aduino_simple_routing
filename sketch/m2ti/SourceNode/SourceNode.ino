@@ -3,11 +3,11 @@
 #include <HumiditySensor.h>
 #include <SourceNode.h>
 #include <CommonValues.h>
-#include <LcdDisplay.h>
+#include <Lcd.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h> 
 
-const unsigned long myAddress = 0x12345678;
+const unsigned long myAddress = 0x40922070;
 
 //int pinNumber = 8;
 
@@ -26,14 +26,16 @@ void setup()
 {
   Serial.begin(38400);
   sourceNode.setAddress(myAddress);
+//  Lcd::getInstance().display("test");
 }
 
 void loop()
 {  
+  
   sourceNode.processMessages();
   
-  //sourceNode.sendSensorValue();
-  
+  sourceNode.sendSensorValue();
+//  delay(CommonValues::Routing::SOURCE_DELAY);
   delay(1000);
 }
 

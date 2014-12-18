@@ -18,7 +18,6 @@ class SourceNode
   private:
 	bool _broadcast;
     unsigned short _seqNum;
-    unsigned short _lastDiscoverySequenceNumber;
     unsigned short _lastAlertSequenceNumber;
     unsigned short _level;
 	unsigned long _myAddress;
@@ -38,6 +37,7 @@ class SourceNode
     SourceNode();
     
     String receiveMessage();
+	void send(const Message & mess);
 	void sendMessage(XBeeAddress64 & addr, const Message & mess);
 	void broadcastMessage(const Message & mess);
 	void unicastMessageToSink(const Message & mess);

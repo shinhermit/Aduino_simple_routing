@@ -5,6 +5,11 @@
 #include <AlertMessage.h>
 #include <MessageConverter.h>
 
+#include <Lcd.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+
+
 XBee xbee = XBee();
 
 unsigned short seqNum = 0;
@@ -28,7 +33,7 @@ void loop()
   seqNum = (seqNum + 1) % CommonValues::Message::SEQUENCE_NUMBER_MOD;
   
   Alert alert(Message::ALERT, sensorValue);
-  AlertMessage mess(0x408BC822, seqNum, alert);
+  AlertMessage mess(0x4086D82E, seqNum, alert);
   
   // Serialize the message
   String serialMess = MessageConverter::serialize(mess);

@@ -148,7 +148,8 @@ void SinkNode::discover()
   DiscoveryMessage mess(
         CommonValues::Message::SINK_SUFFIX,
         _seqNum,
-        CommonValues::Routing::SINK_LEVEL);
+        10);
+        //CommonValues::Routing::SINK_LEVEL);
         
   broadcastMessage(mess);
   

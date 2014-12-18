@@ -36,7 +36,7 @@ String MessageConverter::serialize(const Message & mess)
     alertType += int(mess.getAlert().getAlertType());
     sensorValue += floatToString(mess.getAlert().getSensorValue());
   }
-  
+
   return prefix +
          sender + sep +
          messageType + sep +

@@ -93,7 +93,7 @@ String Message::toString()const
 
   return
     String("Message\n{")
-    + String("\tType: ") + String(_messageType == 0 ? "ALERT,\n" : "DISCOVERY,\n")
+    + String("\tType: ") + String(_messageType == 1 ? "ALERT,\n" : "DISCOVERY,\n")
     + String("\tSender: ") + String(sender) + String("\n")
     + String("\tSequence number: ") + _seqNum + String("\n")
     + _getSpecialString()
