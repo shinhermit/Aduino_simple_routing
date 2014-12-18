@@ -1,8 +1,12 @@
 #include <XBee.h> // make it added to include path
 #include <SoftwareSerial.h>
+#include <CommonValues.h>
+
+#include <Lcd.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 
 #include <SinkNode.h>
-#include <CommonValues.h>
 
 SinkNode sinkNode = SinkNode::getInstance();
 
@@ -13,10 +17,11 @@ void setup()
 
 void loop()
 {
-  sinkNode.processMessages();
+//  sinkNode.processMessages();
   
-//  sinkNode.discover();
+  sinkNode.discover();
 
-  delay(CommonValues::Routing::SINK_DELAY);
+  delay(5000);
+//  delay(CommonValues::Routing::SINK_DELAY);
 }
 

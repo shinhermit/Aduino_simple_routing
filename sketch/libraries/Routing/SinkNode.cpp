@@ -123,10 +123,13 @@ void SinkNode::broadcastMessage(const DiscoveryMessage & mess)
 {
   // Serialize the message
   String serialMess = MessageConverter::serialize(mess);
-  char strMess[serialMess.length()];
-  serialMess.toCharArray(strMess, serialMess.length());
 
-  Serial.println(String("\nBroadcasting message: ")+strMess);
+  // + 1 on message length or /@sender#0#level#seqNum##
+  // truncated to /@sender#0#level#seqNum#
+  char strMess[serialMess.length() + 1];
+  serialMess.toCharArray(strMess, serialMess.length() + 1);
+
+  Serial.println(String("\nBroadcasting message: ")+strMess+" ; ");
   
   // Send xbee request
   XBeeAddress64 addr = XBeeAddress64(
