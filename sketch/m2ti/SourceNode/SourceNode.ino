@@ -35,7 +35,8 @@ void loop()
   sourceNode.processMessages();
   
   sourceNode.sendSensorValue();
-//  delay(CommonValues::Routing::SOURCE_DELAY);
-  delay(1000);
+  
+  delay(CommonValues::Routing::SOURCE_WAKEUP_DELAY);
+  //delay(50);
 }
 

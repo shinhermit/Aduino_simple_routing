@@ -19,6 +19,8 @@ class SourceNode
 	bool _broadcast;
     unsigned short _seqNum;
     unsigned short _lastAlertSequenceNumber;
+    unsigned short _lastDiscoverySequenceNumber;
+	unsigned long _lastAlertTimestamp;
     unsigned short _level;
 	unsigned long _myAddress;
 	unsigned long _gatewayToSink;

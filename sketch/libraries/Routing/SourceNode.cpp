@@ -3,7 +3,7 @@
 #include <MessageConverter.h>
 #include <AlertMessage.h>
 #include <Lcd.h>
-
+#include <math.h> // for abs()
 
 #include <SoftwareSerial.h>
 
@@ -16,6 +16,8 @@ void SourceNode::initialize()
 
 SourceNode::SourceNode()
 :_seqNum(0),
+	_lastDiscoverySequenceNumber(0),
+	_lastAlertTimestamp(0),
 	_level(0),
  	 _broadcast(false),
 	_myAddress(0),
@@ -31,6 +33,8 @@ SourceNode::SourceNode()
 
 SourceNode::SourceNode(const SourceNode & other)
 :_seqNum(other._seqNum),
+	_lastDiscoverySequenceNumber(other._lastDiscoverySequenceNumber),
+	_lastAlertTimestamp(other._lastAlertTimestamp),
 	_level(other._level),
  	 _broadcast(other._broadcast),
 	_myAddress(other._myAddress),
@@ -85,14 +89,24 @@ void SourceNode::sendSensorValue ()
 	unsigned short alertType = CommonValues::Alert::DEFAULT_ALERT_TYPE; 
 	float sensorValue = 8.99;
 
-	Alert alert(alertType, sensorValue);
-	AlertMessage message(
-		_myAddress,
-		getSequenceNumber(),
-		alert
-	);
+	unsigned long timeStamp = millis();
+	unsigned long delay = abs(timeStamp - _lastAlertTimestamp);
+	Serial.println(String(delay));
+	if (delay >= CommonValues::Routing::SOURCE_DELAY) 
+	{
+		//store time of alert
+		_lastAlertTimestamp = timeStamp;
 
-	send(message);
+		//prepare and send alert
+		Alert alert(alertType, sensorValue);
+		AlertMessage message(
+			_myAddress,
+			getSequenceNumber(),
+			alert
+		);
+
+		send(message);
+	}
 }
 
 unsigned short SourceNode::getSequenceNumber()

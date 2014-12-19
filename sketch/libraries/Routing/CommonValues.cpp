@@ -27,6 +27,8 @@ const unsigned short CommonValues::Routing::SINK_DELAY = 50;
 
 const unsigned short CommonValues::Routing::SOURCE_DELAY = 5000;
 
+const unsigned short CommonValues::Routing::SOURCE_WAKEUP_DELAY = 500;
+
 const unsigned short CommonValues::Routing::MAX_PEERS = 10;
 
 const unsigned long CommonValues::Routing::DELAY_LIMIT =

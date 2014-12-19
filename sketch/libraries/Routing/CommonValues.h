@@ -70,10 +70,13 @@ namespace CommonValues
       /// The value of the level of the sink node.
       static const unsigned short SINK_LEVEL;
 
-      /// The time the sinl node waits before sending messages.
+      /// The time the sink node waits before sending messages.
       static const unsigned short SINK_DELAY;
 
-      /// The time the source nodes wait before sending messages.
+	  /// Delay between two source node wakeups
+	  static const unsigned short SOURCE_WAKEUP_DELAY;
+
+      /// The minimum time between two alerts.
       static const unsigned short SOURCE_DELAY;
 
       /// The maximum numbers for peers in the arduino network (estimation).
