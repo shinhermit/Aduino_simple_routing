@@ -47,7 +47,13 @@ void Lcd::display(char * mess)
   display(String(mess));
 }
 
-void Lcd::update()
+void Lcd::scroll()
+{
+  block(CommonValues::Lcd::LCD_REFRESH_PERIOD);
+  update();
+}
+
+void Lcd::onUpdate()
 {
   if(_scrollingOn)
   {

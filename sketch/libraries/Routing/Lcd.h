@@ -6,10 +6,12 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
+#include <Blockable.h>
+
 /**
 * Wrapper for the LiquidCristal librairy.
 */
-class Lcd
+class Lcd : public Blockable
 {
  private:
   /// instance of the LiquidCristal librairy object. 
@@ -46,6 +48,14 @@ class Lcd
       const unsigned long & nbCols,
       const unsigned long & nbRows);
 
+ protected:
+
+  /**
+   * \overload
+   */
+  virtual void onUpdate();
+
+
  public:
   /**
    * Procides the singleton instance of this LCD printer class.
@@ -79,9 +89,9 @@ class Lcd
   void display(char * mess);
 
   /**
-   * \overload
+   *Scrolls down the text on the display.
    */
-  virtual void update();
+  void scroll();
 
   /**
    * Defines whether long texts should be scrolled or not.

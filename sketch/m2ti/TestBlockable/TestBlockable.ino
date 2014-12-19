@@ -16,17 +16,28 @@ void setup()
   
   // Activate scrolling
   lcd.setScrollingOn(true);
-  
   lcd.display("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // ABCDEFGHIJKLMNOP
-  lcd.scroll(); // QRSTUVWXYZ
-  lcd.scroll(); // ABCDEFGHIJKLMNOP
-  lcd.scroll(); // QRSTUVWXYZ
-  lcd.scroll(); // ABCDEFGHIJKLMNOP
-  
-  delay(5000);
 }
+
+bool first = true;
 
 void loop()
 {
-  lcd.scroll();
+  lcd.block(1000);
+  lcd.update(); // QRSTUVWXYZ
+  
+  if( !lcd.isBlocked() )
+  {
+    if(first)
+    {
+      lcd.display("ZYXVUTSRQPONMLKJIHGFEDCBA"); // ZYXVUTSRQPONMLKJ
+      first = false;
+    }
+    
+    lcd.block();
+    lcd.update(); // Should do nothing
+    lcd.unblock();
+    lcd.update();  // IHGFEDCBA
+  }
+  
 }

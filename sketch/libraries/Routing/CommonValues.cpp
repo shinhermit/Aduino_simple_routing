@@ -39,3 +39,5 @@ const unsigned long CommonValues::Lcd::LCD_ADDR = 0x20;
 const unsigned long CommonValues::Lcd::LCD_NUMBER_OF_COLUMNS = 16;
 
 const unsigned long CommonValues::Lcd::LCD_NUMBER_OF_ROWS = 2;
+
+const unsigned long CommonValues::Lcd::LCD_REFRESH_PERIOD = 1000;
