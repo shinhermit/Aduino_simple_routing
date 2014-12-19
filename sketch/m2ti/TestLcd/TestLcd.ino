@@ -11,8 +11,20 @@ void setup()
   
   //delay(1000);
   lcd.display("Hello ");
-  delay(5000);
   lcd.display("Bye");
+  
+  // Activate scrolling
+  lcd.setScrollingOn(true);
+  
+  lcd.display("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  delay(1000);
+  lcd.update();
+  delay(1000);
+  lcd.update();
+  delay(1000);
+  lcd.update();
+  delay(1000);
+  lcd.update();
 }
 
 void loop()
