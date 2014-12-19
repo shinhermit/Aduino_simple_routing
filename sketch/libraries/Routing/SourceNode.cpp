@@ -91,7 +91,8 @@ void SourceNode::sendSensorValue ()
 
 	unsigned long timeStamp = millis();
 	unsigned long delay = abs(timeStamp - _lastAlertTimestamp);
-	Serial.println(String(delay));
+
+
 	if (delay >= CommonValues::Routing::SOURCE_DELAY) 
 	{
 		//store time of alert
@@ -125,7 +126,7 @@ bool SourceNode::processMessage()
 	bool messageProcessed = false;
 	unsigned long timeStamp;
 
-	Serial.println("\nChecking for messages.");
+	Serial.println(".");
 
 		//LcdDisplay::getInstance().display("test");
 	_xbee.readPacket();
@@ -270,20 +271,26 @@ void SourceNode::sendMessage(XBeeAddress64 & addr, const Message & mess)
 
 void SourceNode::unicastMessageToSink(const Message & mess)
 {
-
 	char humanReadableSender[9];
 	sprintf(humanReadableSender, "%08lX", _gatewayToSink);
 
-	Serial.println("About to send unicast message to" + String(humanReadableSender));
+	if (_level > 0) 
+	{
+		Serial.println("About to send unicast message to" + String(humanReadableSender));
 
-	XBeeAddress64 addr = XBeeAddress64(
-		CommonValues::Message::MAC_PREFIX,
-		_gatewayToSink
-	);
+		XBeeAddress64 addr = XBeeAddress64(
+			CommonValues::Message::MAC_PREFIX,
+			_gatewayToSink
+		);
 
-	sendMessage(addr, mess);
+		sendMessage(addr, mess);
 
-	Serial.println("\n\nDone sending message to gateway");
+		Serial.println("\n\nDone sending message to gateway");
+	}
+	else 
+	{
+		Serial.println("Could not send unicast message. Level not set yet.");
+	}
 }
 
 void SourceNode::broadcastMessage(const Message & mess)

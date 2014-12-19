@@ -15,10 +15,6 @@ const unsigned long myAddress = 0x40922070;
 
 //SourceNode sourceNode(myAddress, humiditySensor);
 
-//SourceNode sourceNode(myAddress);
-
-//SourceNode sourceNode();
-
 SourceNode sourceNode = SourceNode::getInstance();
 
 
@@ -26,7 +22,6 @@ void setup()
 {
   Serial.begin(38400);
   sourceNode.setAddress(myAddress);
-//  Lcd::getInstance().display("test");
 }
 
 void loop()
@@ -37,6 +32,5 @@ void loop()
   sourceNode.sendSensorValue();
   
   delay(CommonValues::Routing::SOURCE_WAKEUP_DELAY);
-  //delay(50);
 }
 

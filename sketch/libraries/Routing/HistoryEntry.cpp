@@ -60,7 +60,7 @@ unsigned long HistoryEntry::timeStamp()const
 
 bool HistoryEntry::_duplicates(const HistoryEntry & other)const
 {
-  unsigned long delay = _usingedDiff(other._timeStamp, _timeStamp);
+  unsigned long delay = _unsignedDiff(other._timeStamp, _timeStamp);
 
   return
     _seqNum == other._seqNum
@@ -69,26 +69,39 @@ bool HistoryEntry::_duplicates(const HistoryEntry & other)const
 
 bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 {
-  unsigned long delay = _usingedDiff(other._timeStamp, _timeStamp);
-
+  unsigned long delay = _unsignedDiff(other._timeStamp, _timeStamp);
+  bool isExpired = delay > CommonValues::Routing::DELAY_LIMIT;
+  bool currentIsOlder = (other._timeStamp - _timeStamp) > 0;
   bool greaterSeq = _seqNum > other._seqNum;
 
-  bool afterReset = (_seqNum <= other._seqNum
-		     && delay > CommonValues::Routing::DELAY_LIMIT);
-
-  return greaterSeq || afterReset;
+  return 
+    (isExpired && currentIsOlder)
+	||
+	(!isExpired && greaterSeq);
 }
+
+//bool HistoryEntry::_newerThan(const HistoryEntry & other)const
+//{
+//  unsigned long delay = _unsignedDiff(other._timeStamp, _timeStamp);
+//
+//  bool greaterSeq = _seqNum > other._seqNum;
+//
+//  bool afterReset = (_seqNum <= other._seqNum
+//		     && delay > CommonValues::Routing::DELAY_LIMIT);
+//
+//  return greaterSeq || afterReset;
+//}
 
 bool HistoryEntry::_olderThan(const HistoryEntry & other)const
 {
   return !_duplicates(other) && !_newerThan(other);
 }
 
-long double HistoryEntry::_usingedDiff(const unsigned long & x,
+long double HistoryEntry::_unsignedDiff(const unsigned long & x,
 			 const unsigned long & y)const
 {
   return (x > y) ? x - y : y - x;
-  //  return (x > y) ? x - y : -(y - x);
+  //return (x > y) ? x - y : -(y - x);
 }
 
 String HistoryEntry::toString()const

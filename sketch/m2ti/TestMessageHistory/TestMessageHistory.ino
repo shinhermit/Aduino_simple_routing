@@ -4,6 +4,10 @@
 
 #include <assert.h>
 
+#include <Lcd.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+
 void setup()
 {
   Serial.begin(CommonValues::Routing::XBEE_RATE);
