@@ -1,6 +1,8 @@
 #include "Lcd.h"
 #include "CommonValues.h"
 
+#include <SoftwareSerial.h>
+
 Lcd * Lcd::_instance = NULL;
 
 Lcd::Lcd(const unsigned long & lcdAddr,
@@ -14,6 +16,7 @@ Lcd::Lcd(const unsigned long & lcdAddr,
 {
   _lcd.init(); 
   _lcd.backlight();
+  _lcd.clear();
 }
 
 Lcd::~Lcd()
@@ -26,8 +29,6 @@ Lcd::~Lcd()
 
 void Lcd::display(const String & mess)
 {
-  _lcd.clear();
-
   if(_scrollingOn
      && mess.length() > _maxLen)
   {

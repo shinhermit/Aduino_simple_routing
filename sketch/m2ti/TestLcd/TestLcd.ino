@@ -4,29 +4,31 @@
 #include <SoftwareSerial.h>
 
 #include <Lcd.h>
+#include <CommonValues.h>
 
-Lcd & lcd = Lcd::getInstance();
-  
 void setup()
 {
-  
-  //delay(1000);
-  lcd.display("Hello ");
-  lcd.display("Bye");
+  Lcd & lcd = Lcd::getInstance(); // TODO: problem when instanciating as a global variable
   
   // Activate scrolling
   lcd.setScrollingOn(true);
   
   lcd.display("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // ABCDEFGHIJKLMNOP
-  lcd.scroll(); // QRSTUVWXYZ
-  lcd.scroll(); // ABCDEFGHIJKLMNOP
-  lcd.scroll(); // QRSTUVWXYZ
-  lcd.scroll(); // ABCDEFGHIJKLMNOP
   
-  delay(5000);
+  delay(2000);
+  lcd.update(); // QRSTUVWXYZ
+  
+//  delay(2000);
+//  lcd.update(); // ABCDEFGHIJKLMNOP
+  
+//  delay(2000);
+//  lcd.update(); // QRSTUVWXYZ
+  
+//  delay(2000);
+//  lcd.update(); // ABCDEFGHIJKLMNOP
 }
 
 void loop()
 {
-  lcd.scroll();
+  //lcd.scroll();
 }
