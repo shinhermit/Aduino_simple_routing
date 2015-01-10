@@ -37,12 +37,7 @@ void Blockable::update()
 {
   unsigned long now = millis();
 
-Serial.println("update");
-  if(!_isBlocked)
-  {
-    onUpdate();
-  }
-  else
+  if(_isBlocked)
   {
     if(_blockLen != 0
        && now > _blockStart)
@@ -52,6 +47,11 @@ Serial.println("update");
 	unblock();
       }
     }
+  }
+
+  if(!_isBlocked)
+  {
+    onUpdate();
   }
 }
 
