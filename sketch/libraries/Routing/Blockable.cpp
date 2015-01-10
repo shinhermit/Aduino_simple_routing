@@ -1,5 +1,7 @@
 #include "Blockable.h"
 
+#include <SoftwareSerial.h>
+
 Blockable::Blockable()
   :_isBlocked(false),
    _blockStart(0),
@@ -35,6 +37,7 @@ void Blockable::update()
 {
   unsigned long now = millis();
 
+Serial.println("update");
   if(!_isBlocked)
   {
     onUpdate();

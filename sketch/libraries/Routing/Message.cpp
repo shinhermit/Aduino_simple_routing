@@ -28,7 +28,7 @@ Message::Message()
   _seqNum(0)
 {}
 
-Message::Message & Message::operator=(const Message & other)
+Message & Message::operator=(const Message & other)
 {
   _messageType = Message::MessageType(other._messageType);
   _sender = other._sender;

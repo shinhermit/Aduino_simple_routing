@@ -10,7 +10,7 @@ LiquidCrystal_I2C lcd(0x20,16,2);  // set the LCD address to 0x27 for a 16 chars
 
 void setup()
 {
-  Serial.begin(38400);
+  Serial.begin(115200);
   
   Serial.println("Serial printing");
   

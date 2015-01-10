@@ -9,13 +9,17 @@ Lcd::Lcd(const unsigned long & lcdAddr,
 	 const unsigned long & nbCols,
 	 const unsigned long & nbRows)
   :_lcd(lcdAddr, nbCols, nbRows),
-   _maxLen(nbRows *nbCols),
+   _nbCols(nbCols),
+   _nbRows(nbRows),
+   _maxLen(nbRows * nbCols),
    _scrollingOn(false),
    _mess(),
+   _lineCursor(0),
    _inputCursor(0)
 {
   _lcd.init(); 
   _lcd.backlight();
+
   _lcd.clear();
 }
 
@@ -39,7 +43,7 @@ void Lcd::display(const String & mess)
   }
   else
   {
-    _lcd.print(mess);
+    _displayAutoLineFeed(mess);
   }
 }
 
@@ -52,6 +56,13 @@ void Lcd::scroll()
 {
   block(CommonValues::Lcd::LCD_REFRESH_PERIOD);
   update();
+}
+
+void Lcd::newLine()
+{
+  _lineCursor = (_lineCursor + 1) % _nbRows;
+
+  _lcd.setCursor(0, _lineCursor);
 }
 
 void Lcd::onUpdate()
@@ -92,13 +103,34 @@ bool Lcd::isScrollingOn()const
   return _scrollingOn;
 }
 
+void Lcd::_displayAutoLineFeed(const String & mess)
+{
+  int start = 0;
+  int end = _nbCols;
+
+  String sub = mess.substring(start, end);
+
+  _lcd.clear();
+
+  while(sub.length() > 0)
+  {
+    _lcd.print(sub);
+
+    start = end;
+    end += _nbCols;
+    sub = mess.substring(start, end);
+
+    newLine();
+  }
+}
+
 void Lcd::_displayScrolled(const String & mess)
 {
   _lcd.clear();
 
   if(mess.length() <= _maxLen)
   {
-    display(mess);
+    _displayAutoLineFeed(mess);
   }
   else
   {
@@ -117,12 +149,14 @@ void Lcd::_displayScrolled(const String & mess)
 	end = _inputCursor + _maxLen;
       }
 
-      display(mess.substring(start, end));
+      _displayAutoLineFeed(
+		 mess.substring(start, end));
 
       _inputCursor = _inputCursor + _maxLen;
-      if( _inputCursor > mess.length() )
+      if( _inputCursor >= mess.length() )
       {
 	_inputCursor = 0;
+	_lineCursor = 0;
       }
     }
   }

@@ -17,6 +17,12 @@ class Lcd : public Blockable
   /// instance of the LiquidCristal librairy object. 
   LiquidCrystal_I2C _lcd;
 
+  /// The number of columns of the LCD screen.
+  const unsigned long _nbCols;
+
+  /// The number of rows of the LCD screen.
+  const unsigned long _nbRows;
+
   /// The maximum number of characters that can be displayed on the LCD.
   const unsigned long _maxLen;
 
@@ -26,11 +32,23 @@ class Lcd : public Blockable
   /// The message which is to be scrolled displayed.
   String _mess;
 
+  /// Hold the position of the cursor
+  unsigned long _lineCursor;
+
   /// A cursor which indicates where the display should begin in the target string.
   unsigned long _inputCursor;
 
   /// The singleton instance of this LCD printer class.
   static Lcd * _instance;
+
+  /**
+   * Displays the given string on multiple lines.
+   *
+   * <p>If the string has more than the maximum number of charaters of the LCD screen, it is troncated.</p>
+   *
+   * \param mess the message which is to be displayed.
+   */
+  void _displayAutoLineFeed(const String & mess);
 
   /**
    * Displays the appropriate number of characters from the string and places the input cursor at the position where the next display should begin.
@@ -92,6 +110,11 @@ class Lcd : public Blockable
    *Scrolls down the text on the display.
    */
   void scroll();
+
+  /**
+   * Move the cursor to the next row.
+   */
+  void newLine();
 
   /**
    * Defines whether long texts should be scrolled or not.

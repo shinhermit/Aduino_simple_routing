@@ -7,7 +7,7 @@
 
 #include <SoftwareSerial.h>
 
-SourceNode SourceNode::_instance = SourceNode::SourceNode();
+SourceNode SourceNode::_instance = SourceNode();
 
 void SourceNode::initialize()
 {
