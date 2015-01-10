@@ -76,14 +76,6 @@ class Lcd : public Blockable
 
  public:
   /**
-   * Procides the singleton instance of this LCD printer class.
-   * \return the singleton instance of this LCD printer class.
-   */
-  static Lcd & getInstance(const unsigned long & lcdAddr,
-			   const unsigned long & nbCols,
-			   const unsigned long & nbRows);
-
-  /**
    * Destructor.
    */
   ~Lcd();
@@ -92,7 +84,15 @@ class Lcd : public Blockable
    * Procides the singleton instance of this LCD printer class.
    * \return the singleton instance of this LCD printer class.
    */
-  static Lcd & getInstance();
+  static Lcd * getInstance(const unsigned long & lcdAddr,
+			   const unsigned long & nbCols,
+			   const unsigned long & nbRows);
+
+  /**
+   * Procides the singleton instance of this LCD printer class.
+   * \return the singleton instance of this LCD printer class.
+   */
+  static Lcd * getInstance();
 
   /**
    * Display the provide string on the LCD screen.

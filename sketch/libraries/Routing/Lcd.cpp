@@ -73,7 +73,7 @@ void Lcd::onUpdate()
   }
 }
 
-Lcd & Lcd::getInstance(const unsigned long & lcdAddr,
+Lcd * Lcd::getInstance(const unsigned long & lcdAddr,
 		       const unsigned long & nbCols,
 		       const unsigned long & nbRows)
 {
@@ -82,10 +82,10 @@ Lcd & Lcd::getInstance(const unsigned long & lcdAddr,
     Lcd::_instance = new Lcd(lcdAddr, nbCols, nbRows);
   }
 
-  return *Lcd::_instance;
+  return Lcd::_instance;
 }
 
-Lcd & Lcd::getInstance()
+Lcd * Lcd::getInstance()
 {
   return 
     Lcd::getInstance(CommonValues::Lcd::LCD_ADDR,

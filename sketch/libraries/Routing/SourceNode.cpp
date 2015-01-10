@@ -152,7 +152,7 @@ bool SourceNode::processMessage()
 			if(mess->getMessageType() == Message::ALERT)
 			{	
 				//new alert detected
-				Lcd::getInstance().display("Alert");
+				Lcd::getInstance()->display("Alert");
 
 				if (_level > 0/* && mess->getSenderLevel() > _level*/) 
 				{
@@ -191,9 +191,9 @@ bool SourceNode::processMessage()
 
 				send(message);
 
-				Lcd::getInstance().display("Discovery");
+				Lcd::getInstance()->display("Discovery");
 				delay(250);
-				Lcd::getInstance().display("My level : "+String(_level));
+				Lcd::getInstance()->display("My level : "+String(_level));
 			}
 		}
 		else
