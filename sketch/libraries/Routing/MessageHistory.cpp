@@ -23,13 +23,12 @@ MessageHistory::~MessageHistory()
 }
 
 bool MessageHistory::add(const unsigned long & sender,
-			 const unsigned short & seqNum,
-			 const unsigned long & timeStamp)
+			 const unsigned short & seqNum)
 {
   HistoryEntry *currentEntry, *incoming;
   bool newValue = true;
 
-  incoming = new HistoryEntry(sender, seqNum, timeStamp);
+  incoming = new HistoryEntry(sender, seqNum);
 
   if(_first == NULL)
   {
@@ -46,7 +45,7 @@ bool MessageHistory::add(const unsigned long & sender,
     {
       if(incoming->isNewerThan(*currentEntry))
       {
-        currentEntry->update(seqNum, timeStamp);
+        currentEntry->update(seqNum);
 
 	//Serial.println("incoming entry found greater => new message !");
       }
@@ -69,12 +68,6 @@ bool MessageHistory::add(const unsigned long & sender,
   }
 
   return newValue;
-}
-
-bool MessageHistory::add(const unsigned long & sender,
-			 const unsigned short & seqNum)
-{
-  add(sender, seqNum, millis());
 }
 
 void MessageHistory::remove(const unsigned long & sender)

@@ -75,7 +75,6 @@ bool SinkNode::processNextMessage()
 
   if (_xbee.getResponse().isAvailable())
   {
-    timeStamp = millis();
     wasAvailable = true;
 
     //Serial.println("Message available.");
@@ -87,8 +86,7 @@ bool SinkNode::processNextMessage()
     if(mess->getMessageType() == Message::ALERT)
     {
 	isNew = _history.add(mess->getSender(),
-			     mess->getSequenceNumber(),
-			     timeStamp);
+			     mess->getSequenceNumber());
       if(isNew)
       {
 	Serial.println(mess->toString());

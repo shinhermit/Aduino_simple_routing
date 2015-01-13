@@ -19,11 +19,12 @@ class SourceNode
 	bool _broadcast;
     unsigned short _seqNum;
     unsigned short _lastAlertSequenceNumber;
-    unsigned short _lastDiscoverySequenceNumber;
+    unsigned short _lastDiscoverySequence;
 	unsigned long _lastAlertTimestamp;
     unsigned short _level;
 	unsigned long _myAddress;
-	unsigned long _gatewayToSink;
+	unsigned long _firstGatewayToSink;
+	unsigned long _lastGatewayToSink;
 
     MessageHistory _history;
     
@@ -44,6 +45,9 @@ class SourceNode
 	void broadcastMessage(const Message & mess);
 	void unicastMessageToSink(const Message & mess);
 	unsigned short getSequenceNumber();
+	bool isNewSequenceNumber(const unsigned short & sequenceNumber) const;
+	bool firstIsNewDiscoverySequence(const unsigned short a, const unsigned short b) const;
+
   public:
     SourceNode(const SourceNode & other);
     

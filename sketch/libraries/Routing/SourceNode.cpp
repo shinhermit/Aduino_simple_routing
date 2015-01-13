@@ -16,12 +16,13 @@ void SourceNode::initialize()
 
 SourceNode::SourceNode()
 :_seqNum(0),
-	_lastDiscoverySequenceNumber(0),
+	_lastDiscoverySequence(0),
 	_lastAlertTimestamp(0),
 	_level(0),
  	 _broadcast(false),
 	_myAddress(0),
-	_gatewayToSink(0),
+	_firstGatewayToSink(0),
+	_lastGatewayToSink(0),
 	_lastAlertSequenceNumber(0),
 	_xbee(),
 	_rx16(),
@@ -33,12 +34,13 @@ SourceNode::SourceNode()
 
 SourceNode::SourceNode(const SourceNode & other)
 :_seqNum(other._seqNum),
-	_lastDiscoverySequenceNumber(other._lastDiscoverySequenceNumber),
+	_lastDiscoverySequence(other._lastDiscoverySequence),
 	_lastAlertTimestamp(other._lastAlertTimestamp),
 	_level(other._level),
  	 _broadcast(other._broadcast),
 	_myAddress(other._myAddress),
-	_gatewayToSink(other._gatewayToSink),
+	_firstGatewayToSink(other._firstGatewayToSink),
+	_lastGatewayToSink(other._lastGatewayToSink),
 	_lastAlertSequenceNumber(other._lastAlertSequenceNumber),
 	_xbee(other._xbee),
 	_rx16(other._rx16),
@@ -134,13 +136,13 @@ bool SourceNode::processMessage()
 	if (_xbee.getResponse().isAvailable())
 	{
 		Serial.println("\n<<<<<");
-		timeStamp = millis();
+		//timeStamp = millis();
 		messageProcessed = true;
 
 		strMess = receiveMessage();
 
 		mess = MessageConverter::parse(strMess);
-		isNew = _history.add(mess->getSender(), mess->getSequenceNumber(), timeStamp);
+		isNew = _history.add(mess->getSender(), mess->getSequenceNumber());
 
 	    char humanReadableSender[9];
 		sprintf(humanReadableSender, "%08lX", mess->getSender());
@@ -179,21 +181,42 @@ bool SourceNode::processMessage()
 			else
 			{
 				//Discovery message
-				//set level, record sequence number, gateway to sink then broadcast
-				//if first discovery or new sequence number
-				_level = mess->getSenderLevel() + 1;
-				_gatewayToSink = mess->getSender();
-				DiscoveryMessage message(
-					_myAddress,
-					mess->getSequenceNumber(),
-					_level
-				);
+				//Is it a new discovery sequence ?
+				bool isNewDiscoverySequence = 
+					firstIsNewDiscoverySequence(mess->getSequenceNumber(), _lastDiscoverySequence);
+				bool isOldDiscoverySequence = 
+					firstIsNewDiscoverySequence(_lastDiscoverySequence, mess->getSequenceNumber());
+		
+				if (isNewDiscoverySequence || !isOldDiscoverySequence)//Too many messages lost ??
+				{
+					//set level
+					_level = mess->getSenderLevel() + 1;
+					//record sequence nummber
+					_lastDiscoverySequence = mess->getSequenceNumber();
+					//store gateway to sink
+					_firstGatewayToSink = mess->getSender();
+					
+					//Prepare message and send message
+    				DiscoveryMessage message(
+    					_myAddress,
+    					mess->getSequenceNumber(),
+    					_level
+    				);
+					send(message);
 
-				send(message);
+			    	Lcd::getInstance()->display("Discovery");
+			    	Lcd::getInstance()->display("My level : "+String(_level));
+				} 
+				else if (mess->getSequenceNumber() == _lastDiscoverySequence
+						&&
+						(mess->getSenderLevel() + 1) == _level)
+				{
+					//New route to gateway discovered
+					_lastGatewayToSink = mess->getSender();	
 
-				Lcd::getInstance()->display("Discovery");
-				delay(250);
-				Lcd::getInstance()->display("My level : "+String(_level));
+			    	Lcd::getInstance()->display("New gateway to sink.");
+				}
+
 			}
 		}
 		else
@@ -218,6 +241,27 @@ void SourceNode::processMessages()
 		messageProcessed = processMessage();
 	}
 	while(messageProcessed);
+}
+
+/// Exact same as HistoryEntry::_newerThan
+/// a is reasonably newer than b if a.seqNum = b.seqNum + k [256], 0 < k <= MAX_COEX_SEQ_NUM 
+bool SourceNode::firstIsNewDiscoverySequence(const unsigned short a, const unsigned short b) const
+{
+	bool isNewer = false;
+
+	if (a != b) 
+	{
+		for (int i = 1; i <= CommonValues::Routing::MAX_COEX_SEQ_NUM && !isNewer; i++)
+		{
+			if (((b + i) % 256) == (a % 256))
+			{
+				//b is older => a is newer
+				isNewer = true;
+			}
+		}
+	}
+
+	return isNewer;
 }
 
 void SourceNode::send(const Message & mess)
@@ -272,7 +316,7 @@ void SourceNode::sendMessage(XBeeAddress64 & addr, const Message & mess)
 void SourceNode::unicastMessageToSink(const Message & mess)
 {
 	char humanReadableSender[9];
-	sprintf(humanReadableSender, "%08lX", _gatewayToSink);
+	sprintf(humanReadableSender, "%08lX", _firstGatewayToSink);
 
 	if (_level > 0) 
 	{
@@ -280,7 +324,7 @@ void SourceNode::unicastMessageToSink(const Message & mess)
 
 		XBeeAddress64 addr = XBeeAddress64(
 			CommonValues::Message::MAC_PREFIX,
-			_gatewayToSink
+			_firstGatewayToSink
 		);
 
 		sendMessage(addr, mess);

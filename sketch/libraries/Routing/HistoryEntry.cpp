@@ -54,13 +54,34 @@ bool HistoryEntry::_duplicates(const HistoryEntry & other)const
   return _seqNum == other._seqNum;
 }
 
+//bool HistoryEntry::_newerThan(const HistoryEntry & other)const
+//{
+//
+//  bool greaterSeq = _seqNum > other._seqNum;
+//
+//  bool tooGreatOfADiff = abs(_seqNum - other._seqNum) > CommonValues::Routing::MAX_COEX SEQ NUM;
+//
+//  //wrong !! 
+//  return greaterSeq || tooGreatOfADiff;
+//}
+/// a is reasonably newer than b if a.seqNum = b.seqNum + k [256], 0 < k <= MAX_COEX_SEQ_NUM 
 bool HistoryEntry::_newerThan(const HistoryEntry & other)const
 {
-  bool greaterSeq = _seqNum > other._seqNum;
+	bool isNewer = false;
 
-  bool tooGreatOfADiff = abs(_seqNum - other._seqNum) > CommonValues::Routing::MAX_SEQ_DIFF;
+	if (_seqNum != other._seqNum) 
+	{
+		for (int i = 1; i <= CommonValues::Routing::MAX_COEX_SEQ_NUM && !isNewer; i++)
+		{
+			if (((other._seqNum + i) % 256) == (_seqNum % 256))
+			{
+				//other has an older seqNum => this is newer than other
+				isNewer = true;
+			}
+		}
+	}
 
-  return greaterSeq || tooGreatOfADiff;
+	return isNewer;
 }
 
 bool HistoryEntry::_olderThan(const HistoryEntry & other)const

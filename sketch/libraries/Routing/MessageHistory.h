@@ -26,23 +26,6 @@ class MessageHistory
     /// </p>
     /// \param sender the suffix of the address of the sender of the message which is to taken into accout in the history.
     /// \param seqNum the sequence number of the message.
-    /// \param timeStamp the time at which the message arrived.
-    /// \return true if an entry is actually added to the history, false if it has been ignored.
-    bool add(const unsigned long & sender,
-	     const unsigned short & seqNum,
-	     const unsigned long & timeStamp);
-    
-    /// Adds an entry to the history.
-    /// <p>If no entry related to the sender exists, the entry is added.<br/>
-    /// If an entry already exists:
-    /// <ul>
-    ///   <li>if the comparison with the existing entry shows a newer message, the entry is added;</li>
-    ///   <li>otherwise, the addition is ignored.</li>
-    /// </ul>
-    /// </p>
-    /// <p> When a new entry is added to the history, it is marked with the current timestamp</p>
-    /// \param sender the suffix of the address of the sender of the message which is to taken into accout in the history.
-    /// \param seqNum the sequence number of the message.
     /// \return true if an entry is actually added to the history, false if it has been ignored.
     bool add(const unsigned long & sender,
 	     const unsigned short & seqNum);
