@@ -4,7 +4,7 @@
 
 #include <SoftwareSerial.h>
 
-SinkNode SinkNode::_instance = SinkNode::SinkNode();
+SinkNode SinkNode::_instance = SinkNode();
 
 void SinkNode::initialize()
 {

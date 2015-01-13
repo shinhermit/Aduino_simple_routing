@@ -100,6 +100,9 @@ namespace CommonValues
 
     /// The default number of rows of the LCD screen
     static const unsigned long LCD_NUMBER_OF_ROWS;
+
+    /// The time interval after which the LCD refreshes it's display (scrolls the text).
+    static const unsigned long LCD_REFRESH_PERIOD;
   };
 }
 

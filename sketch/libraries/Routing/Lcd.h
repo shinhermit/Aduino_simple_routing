@@ -6,14 +6,55 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
+#include <Blockable.h>
+
 /**
 * Wrapper for the LiquidCristal librairy.
 */
-class Lcd
+class Lcd : public Blockable
 {
  private:
   /// instance of the LiquidCristal librairy object. 
   LiquidCrystal_I2C _lcd;
+
+  /// The number of columns of the LCD screen.
+  const unsigned long _nbCols;
+
+  /// The number of rows of the LCD screen.
+  const unsigned long _nbRows;
+
+  /// The maximum number of characters that can be displayed on the LCD.
+  const unsigned long _maxLen;
+
+  /// A flag which tells whether the scrolling is activated or not.
+  bool _scrollingOn;
+
+  /// The message which is to be scrolled displayed.
+  String _mess;
+
+  /// Hold the position of the cursor
+  unsigned long _lineCursor;
+
+  /// A cursor which indicates where the display should begin in the target string.
+  unsigned long _inputCursor;
+
+  /// The singleton instance of this LCD printer class.
+  static Lcd * _instance;
+
+  /**
+   * Displays the given string on multiple lines.
+   *
+   * <p>If the string has more than the maximum number of charaters of the LCD screen, it is troncated.</p>
+   *
+   * \param mess the message which is to be displayed.
+   */
+  void _displayAutoLineFeed(const String & mess);
+
+  /**
+   * Displays the appropriate number of characters from the string and places the input cursor at the position where the next display should begin.
+   * \param mess the message which is to be displayed.
+   */
+  void _displayScrolled(const String & mess);
 
   /**
    * Creates an object which can display to an LCD screen.
@@ -25,18 +66,15 @@ class Lcd
       const unsigned long & nbCols,
       const unsigned long & nbRows);
 
-  /// The singleton instance of this LCD printer class.
-  static Lcd * _instance;
+ protected:
+
+  /**
+   * \overload
+   */
+  virtual void onUpdate();
+
 
  public:
-  /**
-   * Procides the singleton instance of this LCD printer class.
-   * \return the singleton instance of this LCD printer class.
-   */
-  static Lcd & getInstance(const unsigned long & lcdAddr,
-			   const unsigned long & nbCols,
-			   const unsigned long & nbRows);
-
   /**
    * Destructor.
    */
@@ -46,7 +84,15 @@ class Lcd
    * Procides the singleton instance of this LCD printer class.
    * \return the singleton instance of this LCD printer class.
    */
-  static Lcd & getInstance();
+  static Lcd * getInstance(const unsigned long & lcdAddr,
+			   const unsigned long & nbCols,
+			   const unsigned long & nbRows);
+
+  /**
+   * Procides the singleton instance of this LCD printer class.
+   * \return the singleton instance of this LCD printer class.
+   */
+  static Lcd * getInstance();
 
   /**
    * Display the provide string on the LCD screen.
@@ -59,6 +105,28 @@ class Lcd
    * \param mess the message which is to be displayed.
    */
   void display(char * mess);
+
+  /**
+   *Scrolls down the text on the display.
+   */
+  void scroll();
+
+  /**
+   * Move the cursor to the next row.
+   */
+  void newLine();
+
+  /**
+   * Defines whether long texts should be scrolled or not.
+   * \param on true to activate scrolling, false otherwise.
+   */
+  void setScrollingOn(bool on);
+
+  /**
+   * Tells whether scrolling the long texts is activated or not.
+   * \return true if scrolling is activated, false otherwise.
+   */
+  bool isScrollingOn()const;
 };
 
 #endif
