@@ -13,8 +13,6 @@ class HistoryEntry
     
     unsigned short _seqNum; /*!< The sequence number of the message. */
 
-    unsigned long _timeStamp; /*!< The time at which the message arrived (distinguish sequence number duplication from sequence number reset). */
-
     bool _duplicates(const HistoryEntry & other)const;
     bool _olderThan(const HistoryEntry & other)const;
     bool _newerThan(const HistoryEntry & other)const;
@@ -35,15 +33,14 @@ class HistoryEntry
     /// Constructor.
     /// \param sender the suffix of the address of the sender of the message associated with this history entry.
     /// \param seqNum the sequence number of the message associated with this history entry.
-    /// \param timeStamp the time at which the message associated with this history entry arrived.
-    HistoryEntry(const unsigned long & sender, const unsigned short & seqNum, const unsigned long & timeStamp);
+    HistoryEntry(const unsigned long & sender, const unsigned short & seqNum);
     
     /// Copy constructor.
     HistoryEntry(const HistoryEntry & other);
     
     /// Updates the entry to the lastest sequence number.<br/>
     /// One should verify that the new information represents a newer message than the one represented by the current entry.
-    void update(const unsigned short & seqNum, const unsigned long & timeStamp);
+    void update(const unsigned short & seqNum);
     
     /// operator ==
     /// Means that the other history entry represents the same message (thus a duplicate) than the message represented by this history entry.
