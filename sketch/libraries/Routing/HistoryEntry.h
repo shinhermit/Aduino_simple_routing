@@ -16,13 +16,6 @@ class HistoryEntry
     bool _duplicates(const HistoryEntry & other)const;
     bool _olderThan(const HistoryEntry & other)const;
     bool _newerThan(const HistoryEntry & other)const;
-
-    /// Calculates the difference of two unsigned
-    /// values.
-    /// \param x one of the value implied in the difference
-    /// \param y the other value implied in the difference.
-    /// \return the absolute difference of the provided unsigned long values.
-    long double _unsignedDiff(const unsigned long & x, const unsigned long & y)const;
     
   public:
     /// The previous entry in the linked list
@@ -41,21 +34,6 @@ class HistoryEntry
     /// Updates the entry to the lastest sequence number.<br/>
     /// One should verify that the new information represents a newer message than the one represented by the current entry.
     void update(const unsigned short & seqNum);
-    
-    /// operator ==
-    /// Means that the other history entry represents the same message (thus a duplicate) than the message represented by this history entry.
-    /// \return true if the other entry represents a duplicated message from the message associated with this entry.
-    bool isDuplicateOf(const HistoryEntry & other)const;
-    
-    /// operator >
-    /// Means that the other history entry represents an older message (thus a duplicate) than the message represented by this history entry.
-    /// \return true if the other entry represents an older message from the sender of the message associated with this history entry.
-    bool isNewerThan(const HistoryEntry & other)const;
-    
-    /// operator <
-    /// Means that the other history entry represents a newer message (thus NOT a duplicate) than the message represented by this history entry.
-    /// \return true if the other entry represents a newer message from the sender of the message associated with this history entry.
-    bool isOlderThan(const HistoryEntry & other)const;
     
     /// Provides the suffix of the address of the sender of the message associated with this history entry.
     /// \return the suffix of the address of the sender of the message.

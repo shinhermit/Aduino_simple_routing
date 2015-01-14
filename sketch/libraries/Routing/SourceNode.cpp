@@ -197,10 +197,10 @@ bool SourceNode::processMessage()
                     //Discovery message
                     //Is it a new discovery sequence ?
                     bool isNewDiscoverySequence = 
-                        firstIsNewDiscoverySequence(mess->getSequenceNumber(), _lastDiscoverySequence);
+		      MessageHistory::isNewer(_lastDiscoverySequence, mess->getSequenceNumber());
                     //Were we part of a discovery newer than the incoming discovery
                     bool isOldDiscoverySequence = 
-                        firstIsNewDiscoverySequence(_lastDiscoverySequence, mess->getSequenceNumber());
+		      MessageHistory::isNewer(mess->getSequenceNumber(), _lastDiscoverySequence);
 
                     if (isNewDiscoverySequence || !isOldDiscoverySequence)
                     {
@@ -265,27 +265,6 @@ void SourceNode::processMessages()
 		messageProcessed = processMessage();
 	}
 	while(messageProcessed);
-}
-
-/// Exact same as HistoryEntry::_newerThan
-/// a is reasonably newer than b if a.seqNum = b.seqNum + k [256], 0 < k <= MAX_COEX_SEQ_NUM 
-bool SourceNode::firstIsNewDiscoverySequence(const unsigned short a, const unsigned short b) const
-{
-	bool isNewer = false;
-Serial.println("a : "+String(a)+" ; b : "+String(b));
-	if (a != b) 
-	{
-		for (int i = 1; i <= CommonValues::Routing::MAX_COEX_SEQ_NUM && !isNewer; i++)
-		{
-			if (((b + i) % 256) == (a % 256))
-			{
-				//b is older => a is newer
-				isNewer = true;
-			}
-		}
-	}
-
-	return isNewer;
 }
 
 void SourceNode::send(const Message & mess)

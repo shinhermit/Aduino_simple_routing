@@ -82,8 +82,8 @@ namespace CommonValues
       /// The maximum numbers for peers in the arduino network (estimation).
       static const unsigned short MAX_PEERS;
 
-	  /// The maximum number of coexsiting sequence number
-	  static const unsigned short MAX_COEX_SEQ_NUM;
+	  /// The maximum number of loss, after which a sequence number is not treated as a reset but as representing a duplicate.
+	  static const unsigned short MAX_LOSS_TOLERANCE;
 
       /// The maximum delay (in seconds) between 2 messages after which we consider that the new messsage can not be a duplication of the first one (it is thus considered that a lot of messages where lost).
       static const unsigned long DELAY_LIMIT;

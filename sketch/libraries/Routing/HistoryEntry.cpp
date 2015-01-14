@@ -1,5 +1,4 @@
 #include "HistoryEntry.h"
-#include <CommonValues.h>
 #include <math.h> // for abs()
 
 HistoryEntry::HistoryEntry(const unsigned long & sender, const unsigned short & seqNum)
@@ -21,24 +20,6 @@ void HistoryEntry::update(const unsigned short & seqNum)
     _seqNum = seqNum;
 }
 
-bool HistoryEntry::isDuplicateOf(const HistoryEntry & other)const
-{
-  return _sender == other._sender
-	  && _duplicates(other);
-}
-
-bool HistoryEntry::isNewerThan(const HistoryEntry & other)const
-{
-  return _sender == other._sender
-    && _newerThan(other);
-}
-
-bool HistoryEntry::isOlderThan(const HistoryEntry & other)const
-{
-  return _sender == other._sender
-    && _olderThan(other);
-}
-
 unsigned long HistoryEntry::sender()const
 {
   return _sender;
@@ -47,53 +28,6 @@ unsigned long HistoryEntry::sender()const
 unsigned short HistoryEntry::sequenceNumber()const
 {
   return _seqNum;
-}
-
-bool HistoryEntry::_duplicates(const HistoryEntry & other)const
-{
-  return _seqNum == other._seqNum;
-}
-
-//bool HistoryEntry::_newerThan(const HistoryEntry & other)const
-//{
-//
-//  bool greaterSeq = _seqNum > other._seqNum;
-//
-//  bool tooGreatOfADiff = abs(_seqNum - other._seqNum) > CommonValues::Routing::MAX_COEX SEQ NUM;
-//
-//  //wrong !! 
-//  return greaterSeq || tooGreatOfADiff;
-//}
-/// a is reasonably newer than b if a.seqNum = b.seqNum + k [256], 0 < k <= MAX_COEX_SEQ_NUM 
-bool HistoryEntry::_newerThan(const HistoryEntry & other)const
-{
-	bool isNewer = false;
-
-	if (_seqNum != other._seqNum) 
-	{
-		for (int i = 1; i <= CommonValues::Routing::MAX_COEX_SEQ_NUM && !isNewer; i++)
-		{
-			if (((other._seqNum + i) % 256) == (_seqNum % 256))
-			{
-				//other has an older seqNum => this is newer than other
-				isNewer = true;
-			}
-		}
-	}
-
-	return isNewer;
-}
-
-bool HistoryEntry::_olderThan(const HistoryEntry & other)const
-{
-  return !_duplicates(other) && !_newerThan(other);
-}
-
-long double HistoryEntry::_unsignedDiff(const unsigned long & x,
-			 const unsigned long & y)const
-{
-  return (x > y) ? x - y : y - x;
-  //return (x > y) ? x - y : -(y - x);
 }
 
 String HistoryEntry::toString()const

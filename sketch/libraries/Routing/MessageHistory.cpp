@@ -1,6 +1,7 @@
 #include "MessageHistory.h"
 
 #include <SoftwareSerial.h>
+#include <CommonValues.h>
 
 MessageHistory::MessageHistory()
   :_first(NULL),
@@ -35,7 +36,6 @@ bool MessageHistory::add(const unsigned long & sender,
     _first = incoming;
     _last = _first;
 
-    //Serial.println("History is empty => new message !");
   }
   else
   {
@@ -43,16 +43,13 @@ bool MessageHistory::add(const unsigned long & sender,
     
     if(currentEntry != NULL)
     {
-      if(incoming->isNewerThan(*currentEntry))
+      if(MessageHistory::isNewer(*currentEntry, *incoming))
       {
         currentEntry->update(seqNum);
-
-	//Serial.println("incoming entry found greater => new message !");
       }
       else
       {
         newValue = false;
-	//Serial.println("incoming entry not found greater => old message !");
       }
 
       delete incoming;
@@ -62,8 +59,6 @@ bool MessageHistory::add(const unsigned long & sender,
       _last->next = incoming;
       _last->next->previous = _last;
       _last = _last->next;
-
-      //Serial.println("No current entry found => new message !");
     }
   }
 
@@ -108,3 +103,73 @@ HistoryEntry * MessageHistory::findEntry(const unsigned long & sender)const
   return foundEntry;
 }
 
+bool MessageHistory::isDuplicate(
+	    const unsigned long & current,
+	    const unsigned long & incoming)
+{
+  return current == incoming;
+}
+
+bool MessageHistory::isNewer(
+	    const unsigned long & current,
+	    const unsigned long & incoming)
+{
+  bool isNewer = false;
+
+  if (current != incoming) 
+  {
+      for (int i = 1; i <= CommonValues::Routing::MAX_LOSS_TOLERANCE && !isNewer; i++)
+      {
+	isNewer = (
+	   ((incoming + i) % 256) == (current % 256));
+      }
+  }
+
+  return isNewer;
+}
+
+bool MessageHistory::isOlder(
+	    const unsigned long & current,
+	    const unsigned long & incoming)
+{
+  return
+    !MessageHistory::isDuplicate(current, incoming)
+    &&
+    !MessageHistory::isNewer(current, incoming);
+}
+
+bool MessageHistory::isDuplicate(
+	    const HistoryEntry & current,
+	    const HistoryEntry & incoming)
+{
+  return
+    current.sender() == incoming.sender()
+    &&
+    MessageHistory::isDuplicate(
+	   current.sequenceNumber(),
+	   incoming.sequenceNumber());
+}
+
+bool MessageHistory::isNewer(
+	    const HistoryEntry & current,
+	    const HistoryEntry & incoming)
+{
+  return
+    current.sender() == incoming.sender()
+    &&
+    MessageHistory::isNewer(
+	   current.sequenceNumber(),
+	   incoming.sequenceNumber());
+}
+
+bool MessageHistory::isOlder(
+	    const HistoryEntry & current,
+	    const HistoryEntry & incoming)
+{
+  return
+    current.sender() == incoming.sender()
+    &&
+    MessageHistory::isOlder(
+	   current.sequenceNumber(),
+	   incoming.sequenceNumber());
+}

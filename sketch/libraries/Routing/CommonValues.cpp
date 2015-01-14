@@ -35,7 +35,7 @@ const unsigned short CommonValues::Routing::MAX_PEERS = 10;
 const unsigned long CommonValues::Routing::DELAY_LIMIT =
   CommonValues::Routing::SOURCE_DELAY * CommonValues::Routing::MAX_PEERS;
 
-const unsigned short CommonValues::Routing::MAX_COEX_SEQ_NUM = 5;
+const unsigned short CommonValues::Routing::MAX_LOSS_TOLERANCE = 5;
 
 const unsigned long CommonValues::Lcd::LCD_ADDR = 0x20;
 
