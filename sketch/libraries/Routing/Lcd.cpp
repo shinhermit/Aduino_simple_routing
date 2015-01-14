@@ -110,8 +110,6 @@ void Lcd::_displayAutoLineFeed(const String & mess)
 
   String sub = mess.substring(start, end);
 
-  //_lcd.clear();
-
   while(sub.length() > 0)
   {
     _lcd.print("        ");
