@@ -118,11 +118,19 @@ bool MessageHistory::isNewer(
 
   if (current != incoming)
   {
-      for (int i = 1; i <= CommonValues::Routing::MAX_LOSS_TOLERANCE && !isNewer; i++)
-      {
-	isNewer = (
-	   ((current + i) % 256) == (incoming % 256));
+		unsigned long diff = (current > incoming) ? current - incoming : incoming - current;
+	  if (diff <= CommonValues::Routing::MAX_LOSS_TOLERANCE)
+	  {
+		  for (int i = 1; i <= CommonValues::Routing::MAX_LOSS_TOLERANCE && !isNewer; i++)
+		  {
+			  isNewer = (
+					  ((current + i) % 256) == (incoming % 256));
+		  }
       }
+	  else 
+      {
+          isNewer = true;
+	  }
   }
 
   return isNewer;
