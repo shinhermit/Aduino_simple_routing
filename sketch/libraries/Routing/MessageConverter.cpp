@@ -35,6 +35,9 @@ String MessageConverter::serialize(const Message & mess)
   {
     alertType += int(mess.getAlert().getAlertType());
     sensorValue += floatToString(mess.getAlert().getSensorValue());
+	//TODO !!! Remove
+	//For test purposes only
+	//senderLevel = "2";
   }
 
   return prefix +
@@ -66,6 +69,8 @@ float MessageConverter::stringToFloat(const String & val)
 
 Message * MessageConverter::parse(const String & mess)
 {
+  Serial.print("parsing: ");
+  Serial.println(mess);
   const unsigned short NB_TOKENS = 6;
   const String & sep = CommonValues::Message::Serialization::SEPERATOR;
   

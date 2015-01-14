@@ -18,7 +18,7 @@ SourceNode::SourceNode()
 :_seqNum(0),
 	_lastDiscoverySequence(0),
 	_lastAlertTimestamp(0),
-	_level(0),
+	_level(1),
  	 _broadcast(false),
 	_myAddress(0),
 	_firstGatewayToSink(0),
@@ -94,7 +94,6 @@ void SourceNode::sendSensorValue ()
 	unsigned long timeStamp = millis();
 	unsigned long delay = abs(timeStamp - _lastAlertTimestamp);
 
-
 	if (delay >= CommonValues::Routing::SOURCE_DELAY) 
 	{
 		//store time of alert
@@ -109,6 +108,15 @@ void SourceNode::sendSensorValue ()
 		);
 
 		send(message);
+
+
+        //new alert received
+        char value[33];
+        snprintf(value, 32,"%f", sensorValue);
+        Lcd::getInstance()->display("[A]: START");
+        Lcd::getInstance()->display("[A:value]: "+String(value));
+
+        Serial.println("Sending alert : "+ String(value));
 	}
 }
 
@@ -130,101 +138,117 @@ bool SourceNode::processMessage()
 
 	Serial.println(".");
 
-		//LcdDisplay::getInstance().display("test");
 	_xbee.readPacket();
 
 	if (_xbee.getResponse().isAvailable())
 	{
 		Serial.println("\n<<<<<");
-		//timeStamp = millis();
 		messageProcessed = true;
 
 		strMess = receiveMessage();
-
-		mess = MessageConverter::parse(strMess);
-		isNew = _history.add(mess->getSender(), mess->getSequenceNumber());
-
-	    char humanReadableSender[9];
-		sprintf(humanReadableSender, "%08lX", mess->getSender());
-		Serial.println("Message available from "+String(humanReadableSender));
-
-		if(isNew)
+        if (!strMess.equals(""))
 		{
-			Serial.println("new");
-			if(mess->getMessageType() == Message::ALERT)
-			{	
-				//new alert detected
-				Lcd::getInstance()->display("Alert");
+            mess = MessageConverter::parse(strMess);
+            isNew = _history.add(mess->getSender(), mess->getSequenceNumber());
 
-				if (_level > 0/* && mess->getSenderLevel() > _level*/) 
-				{
-					//TODO Check test : should relay all messages (whatever the level) ?
-					//our level is set since _level != 0
-					//Message originates from sender with higher level	
-					Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
-					AlertMessage message(
-						mess->getSender(),
-						mess->getSequenceNumber(),
-						alert
-					);
+            char humanReadableSender[9];
+            sprintf(humanReadableSender, "%08lX", mess->getSender());
+            Serial.println("Message available from "+String(humanReadableSender));
 
-					send(message);
-				}
-				else 
-				{
-					//TODO
-					//_level not set yet, no discovery received
-					//store message for the moment
-					//Just drop it!
-				}
-			}
-			else
-			{
-				//Discovery message
-				//Is it a new discovery sequence ?
-				bool isNewDiscoverySequence = 
-					firstIsNewDiscoverySequence(mess->getSequenceNumber(), _lastDiscoverySequence);
-				bool isOldDiscoverySequence = 
-					firstIsNewDiscoverySequence(_lastDiscoverySequence, mess->getSequenceNumber());
-		
-				if (isNewDiscoverySequence || !isOldDiscoverySequence)//Too many messages lost ??
-				{
-					//set level
-					_level = mess->getSenderLevel() + 1;
-					//record sequence nummber
-					_lastDiscoverySequence = mess->getSequenceNumber();
-					//store gateway to sink
-					_firstGatewayToSink = mess->getSender();
-					
-					//Prepare message and send message
-    				DiscoveryMessage message(
-    					_myAddress,
-    					mess->getSequenceNumber(),
-    					_level
-    				);
-					send(message);
+            if(isNew)
+            {
+                if(mess->getMessageType() == Message::ALERT)
+                {	
+                    //new alert received
+                    Lcd::getInstance()->display("[A:sender]: "+String(humanReadableSender));
+                    Serial.println("New alert received from "+String(humanReadableSender));
 
-			    	Lcd::getInstance()->display("Discovery");
-			    	Lcd::getInstance()->display("My level : "+String(_level));
-				} 
-				else if (mess->getSequenceNumber() == _lastDiscoverySequence
-						&&
-						(mess->getSenderLevel() + 1) == _level)
-				{
-					//New route to gateway discovered
-					_lastGatewayToSink = mess->getSender();	
+                    if (_level > 0 && mess->getSenderLevel() > _level) 
+                    {
+                        //TODO Check test : should relay all messages (whatever the level) ?
+                        //our level is set since _level != 0
+                        //Message originates from sender with higher level	
+                        Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
+                        AlertMessage message(
+                                mess->getSender(),
+                                mess->getSequenceNumber(),
+                                alert
+                                );
 
-			    	Lcd::getInstance()->display("New gateway to sink.");
-				}
+                        send(message);
 
-			}
-		}
-		else
-		{
-			Serial.println(String("Message ")+strMess+String(" found in history."));
-		}
+                        char sensorValue[33];
+                        snprintf(sensorValue, 32, "%f", mess->getAlert().getSensorValue());
+                        Lcd::getInstance()->display("[A:value]: " + String(sensorValue));
+                        Serial.println("Value: " + String(sensorValue));
+                    }
+                    else 
+                    {
+                        //TODO
+                        //_level not set yet, no discovery received
+                        //store message for the moment
+                        //Just drop it!
+                        Lcd::getInstance()->display("[A:ignored]");
+                        Serial.println("Alert ignored : no route to host yet or alert from lower level.");
+                    }
+                }
+                else
+                {
+                    //Discovery message
+                    //Is it a new discovery sequence ?
+                    bool isNewDiscoverySequence = 
+                        firstIsNewDiscoverySequence(mess->getSequenceNumber(), _lastDiscoverySequence);
+                    //Were we part of a discovery newer than the incoming discovery
+                    bool isOldDiscoverySequence = 
+                        firstIsNewDiscoverySequence(_lastDiscoverySequence, mess->getSequenceNumber());
 
-		delete mess;
+                    if (isNewDiscoverySequence || !isOldDiscoverySequence)
+                    {
+                        //set level
+                        _level = mess->getSenderLevel() + 1;
+                        //record sequence nummber
+                        _lastDiscoverySequence = mess->getSequenceNumber();
+                        //store gateway to sink
+                        _firstGatewayToSink = mess->getSender();
+
+                        //Lcd and serial display
+                        Lcd::getInstance()->display("[D]: START");
+                        Lcd::getInstance()->newLine();
+                        Serial.println("New discovery sequence");
+                        Lcd::getInstance()->display("[D:level]: "+String(_level));
+                        Serial.println("Discovery received from level " + String(mess->getSenderLevel()));
+                        Serial.println("Setting level to "+String(_level));
+                        //Prepare message and send message
+                        DiscoveryMessage message(
+                                _myAddress,
+                                mess->getSequenceNumber(),
+                                _level
+                                );
+                        send(message);
+
+                    } 
+                    else if (mess->getSequenceNumber() == _lastDiscoverySequence
+                            &&
+                            (mess->getSenderLevel() + 1) == _level)
+                    {
+                        //Store as gateway only if level == own level - 1
+                        //New route to gateway discovered
+                        _lastGatewayToSink = mess->getSender();	
+
+                        Lcd::getInstance()->display("[D:+gw]: " + String(humanReadableSender));
+                        Serial.println("New level "+String(mess->getSenderLevel())+" gateway");
+                    }
+
+                }
+            }
+            else
+            {
+                Serial.println(String("Duplicate message : ")+strMess+String(" found in history."));
+            }
+
+            delete mess;
+
+        }
 		Serial.println(">>>>>");
 	}
 
@@ -248,7 +272,7 @@ void SourceNode::processMessages()
 bool SourceNode::firstIsNewDiscoverySequence(const unsigned short a, const unsigned short b) const
 {
 	bool isNewer = false;
-
+Serial.println("a : "+String(a)+" ; b : "+String(b));
 	if (a != b) 
 	{
 		for (int i = 1; i <= CommonValues::Routing::MAX_COEX_SEQ_NUM && !isNewer; i++)
@@ -266,26 +290,26 @@ bool SourceNode::firstIsNewDiscoverySequence(const unsigned short a, const unsig
 
 void SourceNode::send(const Message & mess)
 {
-	Serial.println("\n[[[[[");
-	Serial.println("Entering send(message)");
-	Serial.println("About to send\n"+mess.toString()+"\n");
-
-	if (mess.getMessageType() == Message::ALERT) 
-	{
-		Serial.println("Alert");
-		Serial.print("Type alerte: ");
-		Serial.println(mess.getAlert().getAlertType());
-		Serial.print("Valeur alert: ");
-		Serial.println(mess.getAlert().getSensorValue());
-	}
-	else 
-	{
-		Serial.println("Discovery");
-	}
-	Serial.println("Message sender level : "+String(mess.getSenderLevel()));
-	Serial.println("My level : "+String(_level));
-	Serial.println("Sequence number : "+String(mess.getSequenceNumber()));
-
+//	Serial.println("\n[[[[[");
+//	Serial.println("Entering send(message)");
+//	Serial.println("About to send\n"+mess.toString()+"\n");
+//
+//	if (mess.getMessageType() == Message::ALERT) 
+//	{
+//		Serial.println("Alert");
+//		Serial.print("Type alerte: ");
+//		Serial.println(mess.getAlert().getAlertType());
+//		Serial.print("Valeur alert: ");
+//		Serial.println(mess.getAlert().getSensorValue());
+//	}
+//	else 
+//	{
+//		Serial.println("Discovery");
+//	}
+//	Serial.println("Message sender level : "+String(mess.getSenderLevel()));
+//	Serial.println("My level : "+String(_level));
+//	Serial.println("Sequence number : "+String(mess.getSequenceNumber()));
+//
 	// no unicast on discovery messages
 	if (_broadcast == false && mess.getMessageType() == Message::ALERT)
 	{
@@ -296,9 +320,9 @@ void SourceNode::send(const Message & mess)
 		broadcastMessage(mess);
 	}
 
-	Serial.println("Exiting send(message)");
-
-	Serial.println("]]]]]");
+//	Serial.println("Exiting send(message)");
+//
+//	Serial.println("]]]]]");
 }
 
 void SourceNode::sendMessage(XBeeAddress64 & addr, const Message & mess)
@@ -329,11 +353,11 @@ void SourceNode::unicastMessageToSink(const Message & mess)
 
 		sendMessage(addr, mess);
 
-		Serial.println("\n\nDone sending message to gateway");
+		Serial.println("Done sending message to gateway");
 	}
 	else 
 	{
-		Serial.println("Could not send unicast message. Level not set yet.");
+		Serial.println("Could not send unicast message. Level not set yet");
 	}
 }
 
@@ -348,5 +372,5 @@ void SourceNode::broadcastMessage(const Message & mess)
 
 	sendMessage(addr, mess);
 
-	Serial.println("\n\nDone broadcasting message");
+	Serial.println("\nDone broadcasting message");
 }

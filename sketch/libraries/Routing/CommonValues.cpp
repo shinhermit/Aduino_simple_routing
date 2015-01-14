@@ -5,7 +5,7 @@ const unsigned short CommonValues::Alert::DEFAULT_ALERT_TYPE = 1;
 
 const unsigned long CommonValues::Message::MAC_PREFIX = 0x0013A200;
 
-const unsigned long CommonValues::Message::SINK_SUFFIX = 0x40762066;
+const unsigned long CommonValues::Message::SINK_SUFFIX = 0x408BC822;
 
 const unsigned long CommonValues::Message::BROADCAST_PREFIX = 0x00000000;
 
@@ -22,6 +22,7 @@ const unsigned short CommonValues::Routing::SENSOR_VALUES_MAX_BUFFER = 5;
 const unsigned int CommonValues::Routing::XBEE_RATE = 38400;
 
 const unsigned short CommonValues::Routing::SINK_LEVEL = 0;
+//const unsigned short CommonValues::Routing::SINK_LEVEL = 1;
 
 const unsigned short CommonValues::Routing::SINK_DELAY = 50;
 

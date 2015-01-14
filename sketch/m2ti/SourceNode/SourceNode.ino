@@ -17,11 +17,14 @@ const unsigned long myAddress = 0x40922070;
 
 SourceNode sourceNode = SourceNode::getInstance();
 
-
+Lcd * lcd;
 void setup()
 {
   Serial.begin(38400);
   sourceNode.setAddress(myAddress);
+  lcd = Lcd::getInstance();
+  
+  //lcd->setScrollingOn(true);
 }
 
 void loop()
@@ -30,6 +33,8 @@ void loop()
   sourceNode.processMessages();
   
   sourceNode.sendSensorValue();
+  
+  //lcd->scroll();
   
   delay(CommonValues::Routing::SOURCE_WAKEUP_DELAY);
 }
