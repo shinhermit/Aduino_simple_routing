@@ -1,8 +1,8 @@
 #include "AlertMessage.h"
 
 AlertMessage::AlertMessage(const unsigned long & sender, const unsigned short & seqNum,
-		 const Alert & alert)
-  :Message::Message(Message::ALERT, sender, seqNum),
+		 const unsigned short & senderLevel, const Alert & alert)
+  :Message::Message(Message::ALERT, sender, seqNum, senderLevel),
   _alert(alert)
 {}
 

@@ -7,7 +7,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h> 
 
-const unsigned long myAddress = 0x40922070;
+const unsigned long myAddress = 0x4076205E;
 
 //int pinNumber = 8;
 

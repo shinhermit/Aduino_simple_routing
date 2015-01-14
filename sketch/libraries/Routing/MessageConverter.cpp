@@ -4,6 +4,7 @@
 #include "CommonValues.h"
 #include "AlertMessage.h"
 #include "DiscoveryMessage.h"
+#include "Utility.h"
 
 #include <SoftwareSerial.h>
 
@@ -23,21 +24,14 @@ String MessageConverter::serialize(const Message & mess)
   sprintf(sender, "%08lX", mess.getSender());
   messageType += int(mess.getMessageType());
   seqNum += int(mess.getSequenceNumber());
-  
-  // Discovery only
-  if(mess.getMessageType() == Message::DISCOVERY)
-  {
-    senderLevel += int(mess.getSenderLevel());
-  }
+  senderLevel += int(mess.getSenderLevel());
   
   // Alert only
   if(mess.getMessageType() == Message::ALERT)
   {
     alertType += int(mess.getAlert().getAlertType());
-    sensorValue += floatToString(mess.getAlert().getSensorValue());
-	//TODO !!! Remove
-	//For test purposes only
-	//senderLevel = "2";
+    Serial.println("");
+    sensorValue += Utility::Convert::floatToString(mess.getAlert().getSensorValue());
   }
 
   return prefix +
@@ -47,24 +41,6 @@ String MessageConverter::serialize(const Message & mess)
          seqNum + sep +
          alertType + sep +
          sensorValue;
-}
-
-String MessageConverter::floatToString(const float & val)
-{
-  int ent, dec;
-
-  ent = int(val);
-  dec = int((val - ent)*1000);
-
-  return String("")+ent+String(".")+dec;
-}
-
-float MessageConverter::stringToFloat(const String & val)
-{
-  char strVal[31];
-  val.toCharArray(strVal, 30);
-
-  return atof(strVal);
 }
 
 Message * MessageConverter::parse(const String & mess)
@@ -92,6 +68,7 @@ Message * MessageConverter::parse(const String & mess)
   sender = strtoul(hexString, (char**)0, 16);
 
   messageType = (Message::MessageType)tokens[1].toInt();
+  senderLevel = (unsigned short)tokens[2].toInt();
   seqNum = (unsigned short)tokens[3].toInt();
    
   switch(messageType)
@@ -100,14 +77,13 @@ Message * MessageConverter::parse(const String & mess)
 	//TODO : remove
 	Serial.println("Alert parsed");
       alert.setAlertType((unsigned short)tokens[4].toInt());
-      alert.setSensorValue(MessageConverter::stringToFloat(tokens[5]));
+      alert.setSensorValue(Utility::Convert::stringToFloat(tokens[5]));
       
-      message = new AlertMessage(sender, seqNum, alert);
+      message = new AlertMessage(sender, seqNum, senderLevel, alert);
       break;
     case Message::DISCOVERY:
 	//TODO : remove
 	Serial.println("Discovery parsed");
-      senderLevel = (unsigned short)tokens[2].toInt();
       
       message = new DiscoveryMessage(sender, seqNum, senderLevel);
       break;

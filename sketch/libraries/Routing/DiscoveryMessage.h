@@ -10,18 +10,6 @@
  */
 class DiscoveryMessage : public Message
 {
- private:
-  /**
-   * The level of the node which was the last to forward the discovery message.
-   */
-  unsigned short _senderLevel;
-
- protected:
-  /**
-   * \overload
-   */
-  virtual String _getSpecialString()const;
-
  public:
   /**
    * Creates a Message which carries path discovery information.
@@ -41,18 +29,6 @@ class DiscoveryMessage : public Message
    * Operator =
    */
   DiscoveryMessage & operator=(const DiscoveryMessage & other);
-
-  /**
-   * Provides the routing level of the node which was the last to forward the discovery message.
-   * \return the routing level the node which was the last to forward the discovery message.
-   */
-  unsigned short getSenderLevel()const;
-
-  /**
-   * Defines the routing level of the node which is the last to forward the discovery message.
-   * \param senderLevel the routing level of the node which is the last to forward the discovery message.
-   */
-  void setSenderLevel(const unsigned short & senderLevel);
 };
 
 #endif

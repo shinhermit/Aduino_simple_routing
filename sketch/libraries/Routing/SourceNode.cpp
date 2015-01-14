@@ -1,6 +1,7 @@
 #include <SourceNode.h>
 #include <CommonValues.h>
 #include <MessageConverter.h>
+#include <Utility.h>
 #include <AlertMessage.h>
 #include <Lcd.h>
 #include <math.h> // for abs()
@@ -18,7 +19,7 @@ SourceNode::SourceNode()
 :_seqNum(0),
 	_lastDiscoverySequence(0),
 	_lastAlertTimestamp(0),
-	_level(1),
+	_level(0),
  	 _broadcast(false),
 	_myAddress(0),
 	_firstGatewayToSink(0),
@@ -104,6 +105,7 @@ void SourceNode::sendSensorValue ()
 		AlertMessage message(
 			_myAddress,
 			getSequenceNumber(),
+			_level,
 			alert
 		);
 
@@ -111,7 +113,7 @@ void SourceNode::sendSensorValue ()
 
 
         //new alert received
-		String value = MessageConverter::floatToString(sensorValue);
+		String value = Utility::Convert::floatToString(sensorValue);
         Lcd::getInstance()->display("[A]: START");
         Lcd::getInstance()->display("[A:value]: "+value);
 
@@ -167,16 +169,17 @@ bool SourceNode::processMessage()
                         //TODO Check test : should relay all messages (whatever the level) ?
                         //our level is set since _level != 0
                         //Message originates from sender with higher level	
-                        Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
-                        AlertMessage message(
-                                mess->getSender(),
-                                mess->getSequenceNumber(),
-                                alert
-                                );
+//                        Alert alert(mess->getAlert().getAlertType(), mess->getAlert().getSensorValue());
+//                        AlertMessage message(
+//                                mess->getSender(),
+//                                mess->getSequenceNumber(),
+//				mess->getSenderLevel(),
+//                                alert
+//                                );
 
-                        send(message);
+                        send(*mess);
 
-                        String sensorValue = MessageConverter::floatToString(mess->getAlert().getSensorValue());
+                        String sensorValue = Utility::Convert::floatToString(mess->getAlert().getSensorValue());
                         Lcd::getInstance()->display("[A:value]: " + sensorValue);
                         Serial.println("Value: " + sensorValue);
                     }
@@ -200,7 +203,7 @@ bool SourceNode::processMessage()
                     bool isOldDiscoverySequence = 
 		      MessageHistory::isNewer(mess->getSequenceNumber(), _lastDiscoverySequence);
 
-                    if (isNewDiscoverySequence || !isOldDiscoverySequence)
+                    if (isNewDiscoverySequence || _level == 0)
                     {
                         //set level
                         _level = mess->getSenderLevel() + 1;

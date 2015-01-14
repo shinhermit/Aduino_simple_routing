@@ -22,21 +22,6 @@ class MessageConverter
                           const unsigned short nbTokens, String * fillMe);
     
   public:
-
-    /**
-     * Converts a float value to String.
-     * \param val the float value which is to be converted.
-     * \return the String representation of the provided value.
-     */
-    static String floatToString(const float & val);
-
-    /**
-     * Converts a string representing a float value into this float value.
-     * \param val the string representation of a float value which is to be converted.
-     * \return the corresponding float value.
-     */
-    static float stringToFloat(const String & val);
-  
     /**
      * Serializes a Message into a String.
      * \param mess the Message which is to be serialized.

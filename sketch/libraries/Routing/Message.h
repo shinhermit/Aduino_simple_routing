@@ -30,7 +30,7 @@ class Message
    * \param seqNum the sequence number of the message.
    */
   Message(const MessageType & type, const unsigned long & sender,
-		 const unsigned short & seqNum);
+		 const unsigned short & seqNum, const unsigned short & senderLevel);
 
   /**
    * Creates a Message which can be sent by the nodes on the network (after serialization).
@@ -118,6 +118,7 @@ class Message
   /// the sequence number of this message.
   unsigned short _seqNum;
 
+
  protected:
   /**
    * Intended for use in toString() method.
@@ -125,6 +126,8 @@ class Message
    * \return a string which is particular to the sub-class.
    */
   virtual String _getSpecialString()const;
+  /// the level of the node which was the last to forward the discovery message.
+  unsigned short _senderLevel;
 };
 
 #endif

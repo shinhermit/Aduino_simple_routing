@@ -27,10 +27,11 @@ class AlertMessage : public Message
    * Creates a Message which carries the provided Alert.
    * \param sender the suffix of the address of the sender (last 8 hexa numbers of the MAC address.
    * \param seqNum the sequence number of the message.
+   * \param senderLevel
    * \param alert the alert carried by this message.
    */
   AlertMessage(const unsigned long & sender, const unsigned short & seqNum,
-		 const Alert & alert);
+	       const unsigned short & senderLevel, const Alert & alert);
 
   /**
    * Copy constructor.

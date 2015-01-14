@@ -4,10 +4,11 @@
 const Message::MessageType Message::DEFAULT_TYPE = Message::ALERT;
 
 Message::Message(const Message::MessageType & type, const unsigned long & sender,
-		 const unsigned short & seqNum)
+		 const unsigned short & seqNum, const unsigned short & senderLevel)
   :_messageType(type),
   _sender(sender),
-  _seqNum(seqNum)
+  _seqNum(seqNum),
+  _senderLevel(senderLevel)
 {}
 
 Message::Message(const unsigned long & sender, const unsigned short & seqNum)
@@ -19,7 +20,8 @@ Message::Message(const unsigned long & sender, const unsigned short & seqNum)
 Message::Message(const Message & other)
   :_messageType(other._messageType),
   _sender(other._sender),
-  _seqNum(other._seqNum)
+  _seqNum(other._seqNum),
+  _senderLevel(other._senderLevel)
 {}
   
 Message::Message()
@@ -33,7 +35,8 @@ Message & Message::operator=(const Message & other)
   _messageType = Message::MessageType(other._messageType);
   _sender = other._sender;
   _seqNum = other._seqNum;
-  
+  _senderLevel = other._senderLevel; 
+
   return *this;
 }
 
@@ -68,15 +71,6 @@ void Message::setSequenceNumber(const unsigned short & seqNum)
   _seqNum = seqNum;
 }
 
-unsigned short Message::getSenderLevel()const
-{
-  return 0;
-}
-
-void Message::setSenderLevel(const unsigned short & senderLevel)
-{
-}
-
 Alert Message::getAlert()const
 {
   return Alert();
@@ -84,6 +78,16 @@ Alert Message::getAlert()const
 
 void Message::setAlert(const Alert & alert)
 {
+}
+
+unsigned short Message::getSenderLevel()const
+{
+  return _senderLevel;
+}
+
+void Message::setSenderLevel(const unsigned short & senderLevel)
+{
+  _senderLevel = senderLevel;
 }
 
 String Message::toString()const
@@ -96,6 +100,7 @@ String Message::toString()const
     + String("\tType: ") + String(_messageType == 1 ? "ALERT,\n" : "DISCOVERY,\n")
     + String("\tSender: ") + String(sender) + String("\n")
     + String("\tSequence number: ") + _seqNum + String("\n")
+    + String("\tSender level: ") + _senderLevel+ String("\n")
     + _getSpecialString()
     +String("\n}");
 }
