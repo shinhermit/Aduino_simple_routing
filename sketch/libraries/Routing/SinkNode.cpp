@@ -80,7 +80,7 @@ bool SinkNode::processNextMessage()
     //Serial.println("Message available.");
 
     strMess = receiveMessage();
-    
+
     mess = MessageConverter::parse(strMess);
     
     if(mess->getMessageType() == Message::ALERT)

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "Alert.h"
 #include "CommonValues.h"
+#include "Utility.h"
 
 Alert::Alert(const unsigned short & alertType,
         const float & sensorValue)
@@ -54,11 +55,8 @@ void Alert::setSensorValue(const float & sensorValue)
 
 String Alert::toString()const
 {
-  char sensorValue[30];
-  sprintf(sensorValue, "%f", sensorValue);
-
   return String("Alert {type: ")
          + _alertType
          + String(", value: ")
-         + String(sensorValue) + String("}");
+    + Utility::Convert::floatToString(_sensorValue) + String("}");
 }

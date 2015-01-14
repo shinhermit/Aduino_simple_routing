@@ -15,13 +15,20 @@ void setup()
   Serial.begin(CommonValues::Routing::XBEE_RATE);
 }
 
+unsigned long i = 0;
+
 void loop()
 {
   sinkNode.processMessages();
   
-  sinkNode.discover();
+  ++i;
+  if(i % 10 == 0)
+  {
+    sinkNode.discover();
+    i = 0;
+  }
 
-  delay(5000);
+  delay(50);
 //  delay(CommonValues::Routing::SINK_DELAY);
 }
 
