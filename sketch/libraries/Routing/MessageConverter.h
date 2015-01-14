@@ -20,6 +20,8 @@ class MessageConverter
      */
     static void getTokens(const String & mess, const String & seperator,
                           const unsigned short nbTokens, String * fillMe);
+    
+  public:
 
     /**
      * Converts a float value to String.
@@ -34,8 +36,6 @@ class MessageConverter
      * \return the corresponding float value.
      */
     static float stringToFloat(const String & val);
-    
-  public:
   
     /**
      * Serializes a Message into a String.

@@ -111,10 +111,9 @@ void SourceNode::sendSensorValue ()
 
 
         //new alert received
-        char value[33];
-        snprintf(value, 32,"%f", sensorValue);
+		String value = MessageConverter::floatToString(sensorValue);
         Lcd::getInstance()->display("[A]: START");
-        Lcd::getInstance()->display("[A:value]: "+String(value));
+        Lcd::getInstance()->display("[A:value]: "+value);
 
         Serial.println("Sending alert : "+ String(value));
 	}
@@ -177,10 +176,9 @@ bool SourceNode::processMessage()
 
                         send(message);
 
-                        char sensorValue[33];
-                        snprintf(sensorValue, 32, "%f", mess->getAlert().getSensorValue());
-                        Lcd::getInstance()->display("[A:value]: " + String(sensorValue));
-                        Serial.println("Value: " + String(sensorValue));
+                        String sensorValue = MessageConverter::floatToString(mess->getAlert().getSensorValue());
+                        Lcd::getInstance()->display("[A:value]: " + sensorValue);
+                        Serial.println("Value: " + sensorValue);
                     }
                     else 
                     {

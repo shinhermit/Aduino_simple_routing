@@ -116,12 +116,12 @@ bool MessageHistory::isNewer(
 {
   bool isNewer = false;
 
-  if (current != incoming) 
+  if (current != incoming)
   {
       for (int i = 1; i <= CommonValues::Routing::MAX_LOSS_TOLERANCE && !isNewer; i++)
       {
 	isNewer = (
-	   ((incoming + i) % 256) == (current % 256));
+	   ((current + i) % 256) == (incoming % 256));
       }
   }
 
