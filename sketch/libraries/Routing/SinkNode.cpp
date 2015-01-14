@@ -1,6 +1,9 @@
+#include <stdlib.h> /* strtof */
+
 #include "SinkNode.h"
 #include "CommonValues.h"
 #include "MessageConverter.h"
+#include "Utility.h"
 
 #include <SoftwareSerial.h>
 
@@ -141,10 +144,19 @@ void SinkNode::broadcastMessage(const DiscoveryMessage & mess)
 
 void SinkNode::discover()
 {
+  if(_myAddress == 0)
+  {
+    String macLow = Utility::Board::getMACLowPart(_xbee);
+    Serial.println(macLow);
+    char hexString[9];
+    macLow.toCharArray(hexString, 9);
+    _myAddress = strtoul(hexString, (char**)0, 16);
+  }
+
   unsigned short seqMod = CommonValues::Message::SEQUENCE_NUMBER_MOD;
 
   DiscoveryMessage mess(
-        CommonValues::Message::SINK_SUFFIX,
+        _myAddress,
         _seqNum,
         CommonValues::Routing::SINK_LEVEL);
         

@@ -21,7 +21,7 @@ Lcd * lcd;
 void setup()
 {
   Serial.begin(38400);
-  sourceNode.setAddress(myAddress);
+  sourceNode.setAddress();
   lcd = Lcd::getInstance();
   
   //lcd->setScrollingOn(true);

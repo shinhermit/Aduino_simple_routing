@@ -29,6 +29,8 @@
 class SinkNode
 {
   private:
+    unsigned long _myAddress;
+
     /// The current sequence number of the discovery messages.
     unsigned short _seqNum;
     /// The message history manager.

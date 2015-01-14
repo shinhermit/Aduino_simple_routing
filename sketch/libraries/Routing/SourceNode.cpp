@@ -4,6 +4,7 @@
 #include <Utility.h>
 #include <AlertMessage.h>
 #include <Lcd.h>
+#include <Utility.h>
 #include <math.h> // for abs()
 
 #include <SoftwareSerial.h>
@@ -56,9 +57,12 @@ SourceNode & SourceNode::getInstance()
 	return SourceNode::_instance;
 }
 
-void SourceNode::setAddress(const unsigned long & myAddress)
+void SourceNode::setAddress()
 {
-	_myAddress = myAddress;
+    String macLow = Utility::Board::getMACLowPart(_xbee);
+    char hexString[9];
+    macLow.toCharArray(hexString, 9);
+    _myAddress = strtoul(hexString, (char**)0, 16);
 }
 
 String SourceNode::receiveMessage()

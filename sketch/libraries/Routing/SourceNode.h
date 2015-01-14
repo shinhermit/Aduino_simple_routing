@@ -53,7 +53,7 @@ class SourceNode
     
     static SourceNode & getInstance();
     
-	void setAddress(const unsigned long & myAddress);
+	void setAddress();
     
 	bool processMessage();
     void processMessages();

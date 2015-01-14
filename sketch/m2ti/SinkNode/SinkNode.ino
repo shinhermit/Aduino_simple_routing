@@ -21,14 +21,15 @@ void loop()
 {
   sinkNode.processMessages();
   
-  ++i;
-  if(i % 10 == 0)
+  if(i % 100 == 0)
   {
     sinkNode.discover();
     i = 0;
   }
+  
+  ++i;
 
   delay(50);
-//  delay(CommonValues::Routing::SINK_DELAY);
 }
+
 
